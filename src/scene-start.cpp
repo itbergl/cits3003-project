@@ -565,8 +565,6 @@ static void adjustShine(vec2 sh)
 {
     sceneObjs[toolObj].specular += sh[0];
     sceneObjs[toolObj].shine += sh[1];
-    printf("X = %f\n", sceneObjs[toolObj].specular);
-    printf("Y = %f\n", sceneObjs[toolObj].shine);
 }
 
 static void materialMenu(int id)
