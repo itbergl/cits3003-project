@@ -17,12 +17,22 @@ Info,  T0: CalcTangentsProcess finished. Tangents have been calculated
 Info,  T0: JoinVerticesProcess finished | Verts in: 240 out: 76 | ~68.3%
 Info,  T0: Cache relevant are 1 meshes (80 faces). Average output ACMR is 0.950000
 Info,  T0: Leaving post processing pipeline
+<<<<<<< HEAD
 Info,  T0: Load res/models-textures/model12.x
+=======
+Info,  T0: Load res/models-textures/model36.x
+>>>>>>> main
 Info,  T0: Found a matching importer for this file format
 Info,  T0: Import root directory is 'res/models-textures/'
 Info,  T0: Entering post processing pipeline
+Info,  T0: RemoveRedundantMatsProcess finished. Removed 0 redundant and 1 unused materials.
 Info,  T0: Points: 0, Lines: 0, Triangles: 1, Polygons: 0 (Meshes, X = removed)
 Info,  T0: CalcTangentsProcess finished. Tangents have been calculated
+<<<<<<< HEAD
 Info,  T0: JoinVerticesProcess finished | Verts in: 22050 out: 6342 | ~71.2%
 Info,  T0: Cache relevant are 1 meshes (7350 faces). Average output ACMR is 1.005578
+=======
+Info,  T0: JoinVerticesProcess finished | Verts in: 15300 out: 4265 | ~72.1%
+Info,  T0: Cache relevant are 1 meshes (5100 faces). Average output ACMR is 0.966863
+>>>>>>> main
 Info,  T0: Leaving post processing pipeline
