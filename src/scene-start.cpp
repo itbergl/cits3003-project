@@ -372,9 +372,7 @@ void drawMesh(SceneObject sceneObj) {
     // Set the model matrix - this should combine translation, rotation and scaling based on what's
     // in the sceneObj structure (see near the top of the program).
 
-    mat4 model = Translate(sceneObj.loc) * Scale(sceneObj.scale);
-
-
+    mat4 model = Translate(sceneObj.loc) * Scale(sceneObj.scale)*RotateX(sceneObj.angles[0])*RotateY(sceneObj.angles[1]);
     // Set the model-view matrix for the shaders
     glUniformMatrix4fv(modelViewU, 1, GL_TRUE, view * model);
 
@@ -416,7 +414,7 @@ void display(void) {
 
     for (int i = 0; i < nObjects; i++) {
         SceneObject so = sceneObjs[i];
-
+        
         vec3 rgb = so.rgb * lightObj1.rgb * so.brightness * lightObj1.brightness * 2.0;
         glUniform3fv(glGetUniformLocation(shaderProgram, "AmbientProduct"), 1, so.ambient * rgb);
         CheckError();
