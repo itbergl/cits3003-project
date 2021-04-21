@@ -34,7 +34,7 @@ GLuint projectionU, modelViewU; // IDs for uniform variables (from glGetUniformL
 
 static float viewDist = 1.5; // Distance from the camera to the centre of the scene
 static float camRotSidewaysDeg = 0; // rotates the camera sideways around the centre
-static float camRotUpAndOverDeg = 20; // rotates the camera up and over the centre.
+static float camRotUpAndOverDeg = 0; // rotates the camera up and over the centre.
 
 mat4 projection; // Projection matrix - set in the reshape function
 mat4 view; // View matrix - set in the display function.
@@ -403,12 +403,8 @@ void display(void) {
 
     // Set the view matrix. To start with this just moves the camera
     // backwards.  You'll need to add appropriate rotations.
-    
 
-    //view = Translate(0.0, 0.0, -viewDist);
-
-    //view = RotateY(-camRotSidewaysDeg) * RotateX(-camRotUpAndOverDeg);
-    view = Translate(0.0, 0.0, -viewDist)* RotateX(camRotUpAndOverDeg)*RotateY(camRotSidewaysDeg) *Translate(0.0, 0.0, viewDist);
+    view = Translate(0.0, 0.0, -viewDist)*RotateX(camRotUpAndOverDeg)*RotateY(camRotSidewaysDeg);
 
 
     SceneObject lightObj1 = sceneObjs[1];
