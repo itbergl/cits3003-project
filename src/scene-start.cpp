@@ -34,7 +34,7 @@ GLuint projectionU, modelViewU; // IDs for uniform variables (from glGetUniformL
 
 static float viewDist = 1.5; // Distance from the camera to the centre of the scene
 static float camRotSidewaysDeg = 0; // rotates the camera sideways around the centre
-static float camRotUpAndOverDeg = 0; // rotates the camera up and over the centre.
+static float camRotUpAndOverDeg = 20; // rotates the camera up and over the centre.
 
 mat4 projection; // Projection matrix - set in the reshape function
 mat4 view; // View matrix - set in the display function.
@@ -372,7 +372,9 @@ void drawMesh(SceneObject sceneObj) {
     // Set the model matrix - this should combine translation, rotation and scaling based on what's
     // in the sceneObj structure (see near the top of the program).
 
-    mat4 model = Translate(sceneObj.loc) * Scale(sceneObj.scale);
+    mat4 model = Translate(sceneObj.loc) * Scale(sceneObj.scale)* RotateX(sceneObj.angles[0])*RotateY(sceneObj.angles[1]);;
+    
+
 
 
     // Set the model-view matrix for the shaders
