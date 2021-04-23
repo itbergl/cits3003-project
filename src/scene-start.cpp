@@ -79,6 +79,7 @@ int nObjects = 0;                  // How many objects are currenly in the scene
 int currObject = -1;               // The current object
 int toolObj = -1;                  // The object currently being modified
 int removeObjectId;
+int duplicateObjectId;
 
 //----------------------------------------------------------------------------
 //
@@ -482,8 +483,18 @@ void display(void)
 //----------------------------------------------------------------------------
 //------Menus-----------------------------------------------------------------
 //----------------------------------------------------------------------------
-//------Remove Menu-----------------------------------------------------------
+//----------------------------------------------------------------------------
 
+static void updateDuplicateMenu(){
+    glutSetMenu(duplicateObjectId); 
+    while(glutGet(GLUT_MENU_NUM_ITEMS) != 0){
+         glutRemoveMenuItem(1);
+    }
+
+    for (int i =3; i < nObjects; i++){
+        glutAddMenuEntry(objectMenuEntries[sceneObjs[i].meshId-1],i);
+    }  
+}
 
 static void updateRemoveMenu(){
     glutSetMenu(removeObjectId); 
@@ -495,9 +506,24 @@ static void updateRemoveMenu(){
         glutAddMenuEntry(objectMenuEntries[sceneObjs[i].meshId-1],i);
     }  
 }
-static void removeObject(int id){
+
+///TODO (maybe?)
+static void duplicateObject(int id){
     deactivateTool();
     
+    addObject(sceneObjs[id].meshId);
+    sceneObjs[nObjects-1].texId =sceneObjs[id].texId;
+    for(int i=0; i <2;i++){
+        sceneObjs[nObjects-1].angles[i] = sceneObjs[id].angles[i];
+    }
+
+    updateRemoveMenu();
+    updateDuplicateMenu();
+    glutPostRedisplay();
+}
+
+static void removeObject(int id){
+    deactivateTool();
     int j = 3;
     for(int i = 3; i <maxObjects; i++){
         if(i ==id){
@@ -508,6 +534,7 @@ static void removeObject(int id){
     }
     toolObj = currObject = nObjects--;
     updateRemoveMenu();
+    updateDuplicateMenu();
     glutPostRedisplay();
 }
 
@@ -518,6 +545,7 @@ static void objectMenu(int id)
     deactivateTool();
     addObject(id);
     updateRemoveMenu();
+    updateDuplicateMenu();
     
 }
 
@@ -710,12 +738,13 @@ static void makeMenu()
 	updateRemoveMenu();
 
     duplicateObjectId = glutCreateMenu(duplicateObject);
-	updateduplicateMenu();
+	updateDuplicateMenu();
 
     glutCreateMenu(mainmenu);
     glutAddMenuEntry("Rotate/Move Camera", 50);
     glutAddSubMenu("Add object", objectId);
     glutAddSubMenu("Remove object",removeObjectId);
+    glutAddSubMenu("Duplicate object", duplicateObjectId);
     glutAddMenuEntry("Position/Scale", 41);
     glutAddMenuEntry("Rotation/Texture Scale", 55);
     glutAddSubMenu("Material", materialMenuId);
