@@ -78,6 +78,7 @@ SceneObject sceneObjs[maxObjects]; // An array storing the objects currently in 
 int nObjects = 0;                  // How many objects are currenly in the scene.
 int currObject = -1;               // The current object
 int toolObj = -1;                  // The object currently being modified
+int removeObjectId = 0;
 
 //----------------------------------------------------------------------------
 //
@@ -279,6 +280,9 @@ static void doRotate()
                      adjustcamSideUp, mat2(400, 0, 0, -90));
 }
 
+
+
+
 //------Add an object to the scene--------------------------------------------
 
 static void addObject(int id)
@@ -310,7 +314,7 @@ static void addObject(int id)
     sceneObjs[nObjects].meshId = id;
     sceneObjs[nObjects].texId = rand() % numTextures;
     sceneObjs[nObjects].texScale = 2.0;
-
+    
     toolObj = currObject = nObjects++;
     setToolCallbacks(adjustLocXZ, camRotZ(),
                      adjustScaleY, mat2(0.05, 0, 0, 10.0));
@@ -377,7 +381,6 @@ void init(void)
     sceneObjs[2].brightness = 0.2; // The light's brightness is 5 times this (below).
 
     addObject(rand() % numMeshes); // A test mesh
-
     // We need to enable the depth test to discard fragments that
     // are behind previously drawn fragments for the same pixel.
     glEnable(GL_DEPTH_TEST);
@@ -480,11 +483,28 @@ void display(void)
 //----------------------------------------------------------------------------
 //------Menus-----------------------------------------------------------------
 //----------------------------------------------------------------------------
+//------Remove Menu-----------------------------------------------------------
+
+
+static void updateRemoveMenu(int id){
+    deactivateTool();
+    glutSetMenu(removeObjectId);
+    int a = nObjects-3;
+    cout << a;
+    glutAddMenuEntry(objectMenuEntries[id-1],a);
+    
+}
+static void removeObject(int id){
+    sceneObjs[id].rgb = vec3(1.0,0.0,1.0);
+}
+
+
 
 static void objectMenu(int id)
 {
     deactivateTool();
     addObject(id);
+    updateRemoveMenu(id);
 }
 
 static void texMenu(int id)
@@ -617,6 +637,10 @@ static void materialMenu(int id)
     }
 }
 
+static void removeMenu(int id) {
+    sceneObjs[id].rgb = vec3(1.0,0.0,0.0);
+}
+
 static void adjustAngleYX(vec2 angle_yx)
 {
     sceneObjs[currObject].angles[1] += angle_yx[0];
@@ -649,6 +673,9 @@ static void mainmenu(int id)
         exit(0);
 }
 
+
+
+
 static void makeMenu()
 {
     int objectId = createArrayMenu(numMeshes, objectMenuEntries, objectMenu);
@@ -659,6 +686,7 @@ static void makeMenu()
 
     int texMenuId = createArrayMenu(numTextures, textureMenuEntries, texMenu);
     int groundMenuId = createArrayMenu(numTextures, textureMenuEntries, groundMenu);
+    //int removeObjectId = glutCreateMenu(removeMenu);
 
     int lightMenuId = glutCreateMenu(lightMenu);
     glutAddMenuEntry("Move Light 1", 70);
@@ -666,19 +694,26 @@ static void makeMenu()
     glutAddMenuEntry("Move Light 2", 80);
     glutAddMenuEntry("R/G/B/All Light 2", 81);
 
+
+    removeObjectId = glutCreateMenu(removeMenu);
+    glutAddMenuEntry("Origin Object",3);
+	
+
     glutCreateMenu(mainmenu);
     glutAddMenuEntry("Rotate/Move Camera", 50);
     glutAddSubMenu("Add object", objectId);
-    glutAddSubMenu("Remove object",objectId);
     glutAddMenuEntry("Position/Scale", 41);
     glutAddMenuEntry("Rotation/Texture Scale", 55);
     glutAddSubMenu("Material", materialMenuId);
     glutAddSubMenu("Texture", texMenuId);
     glutAddSubMenu("Ground Texture", groundMenuId);
     glutAddSubMenu("Lights", lightMenuId);
+    glutAddSubMenu("Remove",removeObjectId);
     glutAddMenuEntry("EXIT", 99);
     glutAttachMenu(GLUT_RIGHT_BUTTON);
 }
+
+
 
 //----------------------------------------------------------------------------
 
