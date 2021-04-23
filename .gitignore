@@ -1,2 +1,7 @@
 res/models-textures/
 scene-start
+.vscode/
+build/
+start_scene
+scene-start
+assimp_log.txt
