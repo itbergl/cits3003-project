@@ -356,6 +356,7 @@ void init(void)
     projectionU = glGetUniformLocation(shaderProgram, "Projection");
     modelViewU = glGetUniformLocation(shaderProgram, "ModelView");
 
+
     // Objects 0, and 1 are the ground and the first light.
     addObject(0); // Square for the ground
     sceneObjs[0].loc = vec4(0.0, 0.0, 0.0, 1.0);
@@ -405,11 +406,11 @@ void drawMesh(SceneObject sceneObj)
     // Set the projection matrix for the shaders
     glUniformMatrix4fv(projectionU, 1, GL_TRUE, projection);
 
+
     // Set the model matrix - this should combine translation, rotation and scaling based on what's
     // in the sceneObj structure (see near the top of the program).
 
     mat4 model = Translate(sceneObj.loc) * Scale(sceneObj.scale) * RotateX(sceneObj.angles[0]) * RotateY(sceneObj.angles[1]);
-    ;
 
     // Set the model-view matrix for the shaders
     glUniformMatrix4fv(modelViewU, 1, GL_TRUE, view * model);
@@ -668,6 +669,7 @@ static void makeMenu()
     glutCreateMenu(mainmenu);
     glutAddMenuEntry("Rotate/Move Camera", 50);
     glutAddSubMenu("Add object", objectId);
+    glutAddSubMenu("Remove object",objectId);
     glutAddMenuEntry("Position/Scale", 41);
     glutAddMenuEntry("Rotation/Texture Scale", 55);
     glutAddSubMenu("Material", materialMenuId);
