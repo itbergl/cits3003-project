@@ -1,0 +1,11 @@
+Add spotlight
+fix distance decay
+change object rotation
+tweak texture zoom
+add comments
+
+---------
+Add n lights
+(brightness of light)
+write report
+redo all questions

@@ -373,7 +373,7 @@ void init(void)
     sceneObjs[1].loc = vec4(2.0, 1.0, 1.0, 1.0);
     sceneObjs[1].scale = 0.1;
     sceneObjs[1].texId = 0;        // Plain texture
-    sceneObjs[1].brightness = 0.2; // The light's brightness is 5 times this (below).
+    sceneObjs[1].brightness = 0.0; // The light's brightness is 5 times this (below).
 
     addObject(55); // Sphere for the first light
     sceneObjs[2].loc = vec4(2.0, 1.0, 1.0, 1.0);
@@ -453,15 +453,15 @@ void display(void)
     lightPosition[1] = view * sceneObjs[2].loc;
 
     glUniform4fv(glGetUniformLocation(shaderProgram, "LightPositionArray"),
-                 1, lightPosition);
+                 2, *lightPosition);
 
-    GLfloat lightbrightness[2];
-    lightbrightness[0] = sceneObjs[1].brightness;
-    lightbrightness[1] = sceneObjs[2].brightness;
+    GLfloat lightBrightness[2];
+    lightBrightness[0] = sceneObjs[1].brightness;
+    lightBrightness[1] = sceneObjs[2].brightness;
 
 
-    glUniform4fv(glGetUniformLocation(shaderProgram, "LightBrightnessArray"),
-                 1, lightBrightness);
+    glUniform1fv(glGetUniformLocation(shaderProgram, "LightBrightnessArray"),
+                 2, lightBrightness);
     CheckError();
 
     for (int i = 0; i < nObjects; i++)
@@ -507,7 +507,7 @@ static void updateMenu(){
         strcat(menuName,objectMenuEntries[sceneObjs[i].meshId-1]);
         if(repeats[sceneObjs[i].meshId] >1 ){
             sprintf(a, "%d",repeats[sceneObjs[i].meshId]);
-            strcat(strcat(strcat(menuName, " {"), a), "}.");
+            strcat(strcat(strcat(menuName, " ("), a), ")");
         }
         glutSetMenu(removeObjectId);
         glutAddMenuEntry(menuName,i);

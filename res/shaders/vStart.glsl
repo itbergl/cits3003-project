@@ -11,7 +11,6 @@ varying vec3 orig;
 uniform mat4 ModelView;
 uniform mat4 Projection;
 uniform float texScale;
-uniform float DistFromOrigin;
 
 
 void main()
