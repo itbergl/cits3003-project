@@ -448,25 +448,27 @@ void display(void)
 
     view = Translate(0.0, 0.0, -viewDist) * RotateX(camRotUpAndOverDeg) * RotateY(camRotSidewaysDeg);
 
-    SceneObject lightObj1 = sceneObjs[1];
-    
-    vec4 lightPosition = view * lightObj1.loc;
+    vec4 lightPosition[2];
+    lightPosition[0] = view * sceneObjs[1].loc;
+    lightPosition[1] = view * sceneObjs[2].loc;
 
-    glUniform4fv(glGetUniformLocation(shaderProgram, "LightPosition1"),
+    glUniform4fv(glGetUniformLocation(shaderProgram, "LightPositionArray"),
                  1, lightPosition);
 
-    SceneObject lightObj2 = sceneObjs[2];
-    lightPosition = view * lightObj2.loc;
+    GLfloat lightbrightness[2];
+    lightbrightness[0] = sceneObjs[1].brightness;
+    lightbrightness[1] = sceneObjs[2].brightness;
 
-    glUniform4fv(glGetUniformLocation(shaderProgram, "LightPosition2"),
-                 1, lightPosition);
+
+    glUniform4fv(glGetUniformLocation(shaderProgram, "LightBrightnessArray"),
+                 1, lightBrightness);
     CheckError();
 
     for (int i = 0; i < nObjects; i++)
     {
         SceneObject so = sceneObjs[i];
 
-        vec3 rgb = so.rgb * lightObj1.rgb * so.brightness * (lightObj1.brightness + lightObj2.brightness)* 2.0;
+        vec3 rgb = so.rgb * so.brightness;
 
         glUniform3fv(glGetUniformLocation(shaderProgram, "AmbientProduct"), 1, so.ambient * rgb);
         CheckError();
