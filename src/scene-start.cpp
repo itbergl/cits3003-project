@@ -501,12 +501,12 @@ static void updateMenu(){
     for (int i =3; i < nObjects; i++){
         char menuName[128] = " ";
         char a[numMeshes*4] = " ";
-        
-        //sprintf(a, "%d",repeats[sceneObjs[i].meshId] ++);
-        //strcat(strcat(strcat(strcat(menuName,objectMenuEntries[sceneObjs[i].meshId-1]), " ("), a), ").");
-        sprintf(a, "%d",repeats[sceneObjs[i].meshId] ++);
-        strcat(strcat(strcat(strcat(menuName,objectMenuEntries[sceneObjs[i].meshId-1]), " ("), a), ").");
-        
+        ++ repeats[sceneObjs[i].meshId];
+        strcat(menuName,objectMenuEntries[sceneObjs[i].meshId-1]);
+        if(repeats[sceneObjs[i].meshId] >1 ){
+            sprintf(a, "%d",repeats[sceneObjs[i].meshId]);
+            strcat(strcat(strcat(menuName, " {"), a), "}.");
+        }
         glutSetMenu(removeObjectId);
         glutAddMenuEntry(menuName,i);
         glutSetMenu(duplicateObjectId);
@@ -520,7 +520,6 @@ static void updateMenu(){
 ///TODO (maybe?)
 static void duplicateObject(int id){
     deactivateTool();
-    
     addObject(sceneObjs[id].meshId);
     sceneObjs[nObjects-1].texId =sceneObjs[id].texId;
     for(int i=0; i <2;i++){
