@@ -10,6 +10,7 @@ varying vec3 orig;
 
 uniform mat4 ModelView;
 uniform mat4 Projection;
+uniform float texScale;
 uniform float DistFromOrigin;
 
 
@@ -29,5 +30,5 @@ void main()
     orig = (ModelView * vec4(0.0, 0.0, 0.0, 1.0)).xyz;
 
     gl_Position = Projection * ModelView * vpos;
-    texCoord = vTexCoord;
+    texCoord = texScale*vTexCoord;
 }
