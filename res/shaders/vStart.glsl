@@ -6,6 +6,7 @@ varying vec2 texCoord;
 varying vec3 pos;
 varying vec3 N;
 varying vec4 camerapos;
+varying vec3 orig;
 
 uniform mat4 ModelView;
 uniform mat4 Projection;
@@ -24,6 +25,8 @@ void main()
     N = normalize( (ModelView*vec4(vNormal, 0.0)).xyz );
 
     camerapos = Projection * ModelView * vec4(0.0, 0.0, 0.0, 1.0);
+
+    orig = (ModelView * vec4(0.0, 0.0, 0.0, 1.0)).xyz;
 
     gl_Position = Projection * ModelView * vpos;
     texCoord = vTexCoord;

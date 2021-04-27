@@ -372,9 +372,9 @@ void init(void)
     sceneObjs[1].loc = vec4(2.0, 1.0, 1.0, 1.0);
     sceneObjs[1].scale = 0.1;
     sceneObjs[1].texId = 0;        // Plain texture
-    sceneObjs[1].brightness = 0.2; // The light's brightness is 5 times this (below).
+    sceneObjs[1].brightness = 0.0; // The light's brightness is 5 times this (below).
 
-    addObject(55); // Sphere for the first light
+    addObject(55); // Sphere for the second light
     sceneObjs[2].loc = vec4(2.0, 1.0, 1.0, 1.0);
     sceneObjs[2].scale = 0.1;
     sceneObjs[2].texId = 0;        // Plain texture
@@ -447,25 +447,31 @@ void display(void)
 
     view = Translate(0.0, 0.0, -viewDist) * RotateX(camRotUpAndOverDeg) * RotateY(camRotSidewaysDeg);
 
-    SceneObject lightObj1 = sceneObjs[1];
+    vec4 lightPos[2];
+    lightPos[0] = view * sceneObjs[1].loc;
+    lightPos[1] = view * sceneObjs[2].loc;
+
+
+    glUniform4fv(glGetUniformLocation(shaderProgram, "LightPositionArray"),
+                 2, *lightPos);
+
+    GLfloat brightness[2];
+    brightness[0] = sceneObjs[1].brightness;
+    brightness[1] = sceneObjs[2].brightness;
+
+    glUniform1fv(glGetUniformLocation(shaderProgram, "LightBrightnessArray"),
+                 2, brightness);
     
-    vec4 lightPosition = view * lightObj1.loc;
+    // printf("%f --- ", brightness[2]);
+                
 
-    glUniform4fv(glGetUniformLocation(shaderProgram, "LightPosition1"),
-                 1, lightPosition);
-
-    SceneObject lightObj2 = sceneObjs[2];
-    lightPosition = view * lightObj2.loc;
-
-    glUniform4fv(glGetUniformLocation(shaderProgram, "LightPosition2"),
-                 1, lightPosition);
     CheckError();
 
     for (int i = 0; i < nObjects; i++)
     {
         SceneObject so = sceneObjs[i];
 
-        vec3 rgb = so.rgb * lightObj1.rgb * so.brightness * (lightObj1.brightness + lightObj2.brightness)* 2.0;
+        vec3 rgb = so.rgb * so.brightness;
 
         glUniform3fv(glGetUniformLocation(shaderProgram, "AmbientProduct"), 1, so.ambient * rgb);
         CheckError();
