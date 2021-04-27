@@ -504,8 +504,9 @@ static void updateMenu(){
         
         //sprintf(a, "%d",repeats[sceneObjs[i].meshId] ++);
         //strcat(strcat(strcat(strcat(menuName,objectMenuEntries[sceneObjs[i].meshId-1]), " ("), a), ").");
-        strcat(strcat(strcat(strcat(menuName,objectMenuEntries[sceneObjs[i].meshId-1]), " ("), a), ").");
         sprintf(a, "%d",repeats[sceneObjs[i].meshId] ++);
+        strcat(strcat(strcat(strcat(menuName,objectMenuEntries[sceneObjs[i].meshId-1]), " ("), a), ").");
+        
         glutSetMenu(removeObjectId);
         glutAddMenuEntry(menuName,i);
         glutSetMenu(duplicateObjectId);

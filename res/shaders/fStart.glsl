@@ -48,6 +48,10 @@ void main() {
 
 
         float decay = constant/(distance * distance);
+        //CHANGE
+        if (i==1) {
+            distance = 1.0;
+        }
         color = color + decay*vec4(LightBrightnessArray[i] * (diffuse + specular), 0.0);
     }
     gl_FragColor = color * texture2D(texture, texCoord * 2.0);
