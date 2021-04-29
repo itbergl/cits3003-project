@@ -5,7 +5,6 @@ build/
 start_scene
 scene-start
 assimp_log.txt
-CMakeLists.txt
 
 .idea
 .vscode
