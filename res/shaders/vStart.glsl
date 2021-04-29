@@ -28,7 +28,7 @@ void main()
     camerapos = Projection * ModelView * vec4(0.0, 0.0, 0.0, 1.0);
 
     orig = (ModelView * vec4(0.0, 0.0, 0.0, 1.0)).xyz;
-    down = (ModelView * vec4(0.0, -1.0, 0.0, 1.0)).xyz;
+    down = normalize((Projection* ModelView*vec4(0.0, -1.0, 0.0, 0.0)).xyz);
 
     gl_Position = Projection * ModelView * vpos;
     texCoord = texScale*vTexCoord;
