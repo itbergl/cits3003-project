@@ -24,8 +24,8 @@ void main()
     // is uniform across dimensions)
     N = normalize( (ModelView*vec4(vNormal, 0.0)).xyz );
 
-    orig = (ModelView * vec4(0.0, 0.0, 0.0, 1.0)).xyz;
-    vec3 downpoint = (ModelView * vec4(0.0, -1.0, 0.0, 1.0)).xyz;
+    orig = (ModelView * vec4(0.0, 0.0, 0.0, 0.0)).xyz;
+    vec3 downpoint = (ModelView * vec4(0.0, -1.0, 0.0, 0.0)).xyz;
     down = normalize(downpoint-orig);
     //down = normalize(
 
