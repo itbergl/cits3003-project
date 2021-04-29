@@ -381,7 +381,13 @@ void init(void)
     sceneObjs[2].texId = 0;        // Plain texture
     sceneObjs[2].brightness = 0.2; // The light's brightness is 5 times this (below).
 
+    addObject(55); // Sphere for the first light
+    sceneObjs[3].loc = vec4(2.0, 1.0, 1.0, 1.0);
+    sceneObjs[3].scale = 0.1;
+    sceneObjs[3].texId = 0;        // Plain texture
+    sceneObjs[3].brightness = 0.2; // The light's brightness is 5 times this (below).
     addObject(rand() % numMeshes); // A test mesh
+
     // We need to enable the depth test to discard fragments that
     // are behind previously drawn fragments for the same pixel.
     glEnable(GL_DEPTH_TEST);
@@ -448,20 +454,22 @@ void display(void)
 
     view = Translate(0.0, 0.0, -viewDist) * RotateX(camRotUpAndOverDeg) * RotateY(camRotSidewaysDeg);
 
-    vec4 lightPosition[2];
+    vec4 lightPosition[3];
     lightPosition[0] = view * sceneObjs[1].loc;
     lightPosition[1] = view * sceneObjs[2].loc;
+    lightPosition[2] = view * sceneObjs[3].loc;
 
     glUniform4fv(glGetUniformLocation(shaderProgram, "LightPositionArray"),
-                 2, *lightPosition);
+                 3, *lightPosition);
 
-    GLfloat lightBrightness[2];
+    GLfloat lightBrightness[3];
     lightBrightness[0] = sceneObjs[1].brightness;
     lightBrightness[1] = sceneObjs[2].brightness;
+    lightBrightness[2] = sceneObjs[3].brightness;
 
 
     glUniform1fv(glGetUniformLocation(shaderProgram, "LightBrightnessArray"),
-                 2, lightBrightness);
+                 3, lightBrightness);
     CheckError();
 
     for (int i = 0; i < nObjects; i++)
@@ -521,9 +529,6 @@ static void updateMenu(){
     }  
 }
 
-
-    
-
 ///TODO (maybe?)
 static void duplicateObject(int id){
     deactivateTool();
@@ -581,7 +586,11 @@ static void groundMenu(int id)
 
 static void adjustBrightnessY(vec2 by)
 {
-    sceneObjs[toolObj].brightness += by[0];
+    if (sceneObjs[toolObj].brightness + by[0] > 0.0) {
+        sceneObjs[toolObj].brightness += by[0];
+    }
+
+    sceneObjs[toolObj].brightness = max(sceneObjs[toolObj].brightness, (float)0.0);//
     sceneObjs[toolObj].loc[1] += by[1];
 }
 
