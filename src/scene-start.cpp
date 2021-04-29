@@ -519,19 +519,19 @@ static void updateMenu(){
         glutRemoveMenuItem(1);
     }
 
+// remove spotlight options
     glutSetMenu(lightMenuId);
     while(glutGet(GLUT_MENU_NUM_ITEMS) != 4){
         glutRemoveMenuItem(glutGet(GLUT_MENU_NUM_ITEMS));
     }
 
 
-
-//if spotlight is on, add it so it can be removed.
+//if spotlight is on, add it to remove menu and light menu
     if(spotlight){
         glutSetMenu(removeObjectId);
         glutAddMenuEntry(" 56 Spotlight",3);
         glutSetMenu(lightMenuId);
-        glutAddMenuEntry("Move Light 3 (spotlight)", 90);
+        glutAddMenuEntry("Move Light 3 (Spotlight)", 90);
         glutAddMenuEntry("R/G/B/All Light 3", 91);
     }
 
@@ -558,8 +558,6 @@ static void updateMenu(){
     }
 }
 
-    
-
 
 ///TODO (maybe?)
 static void duplicateObject(int id){
@@ -577,6 +575,7 @@ static void duplicateObject(int id){
 static void removeObject(int id){
     deactivateTool();
 
+//if removing spotlight
     if(id ==3){
         sceneObjs[3].scale =0.0;
         sceneObjs[3].brightness =0.0;
@@ -584,7 +583,6 @@ static void removeObject(int id){
         updateMenu();
         return;
     }
-
 
     int j = 4;
     for(int i = 4; i <maxObjects; i++){
@@ -806,9 +804,9 @@ static void makeMenu()
     lightMenuId = glutCreateMenu(lightMenu);
     glutAddMenuEntry("Move Light 1", 70);
     glutAddMenuEntry("R/G/B/All Light 1", 71);
-    glutAddMenuEntry("Move Light 2 (directional)", 80);
+    glutAddMenuEntry("Move Light 2 (Directional)", 80);
     glutAddMenuEntry("R/G/B/All Light 2", 81);
-    glutAddMenuEntry("Move Light 3 (spotlight)", 90);
+    glutAddMenuEntry("Move Light 3 (Spotlight)", 90);
     glutAddMenuEntry("R/G/B/All Light 2", 91);
 
     removeObjectId = glutCreateMenu(removeObject);
