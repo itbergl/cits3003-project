@@ -98,11 +98,12 @@ void main() {
 
     vec3 globalAmbient = vec3(0.1, 0.1, 0.1);
     vec3 ambient = AmbientProduct;
-    vec4 color = vec4(globalAmbient + ambient, 1.0);
+    vec4 color = vec4(0.0, 0.0, 0.0, 1.0);
+    //vec4 color = vec4(globalAmbient + ambient, 1.0);
     
-    color += PointLight(20.0, 1.0, 1.0, 1.0);
+    color += PointLight(90.0, 1.0, 1.0, 1.0);
     //color += DirectionalLight(30.0, 1.0, 1.0, 1.0);
-    color += SpotLight(100.0, 0.02, 1.0, 1.0, 0.65);
+    color += SpotLight(10.0, 0.02, 1.0, 1.0, 0.65);
 
     gl_FragColor = color * texture2D(texture, texCoord * 2.0);
 
