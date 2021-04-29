@@ -489,6 +489,8 @@ void display(void)
 //----------------------------------------------------------------------------
 
 static void updateMenu(){
+
+// remove all menu items from both duplicate and remove menus
     glutSetMenu(duplicateObjectId);
     while(glutGet(GLUT_MENU_NUM_ITEMS) != 0){
         glutRemoveMenuItem(1);
@@ -499,12 +501,15 @@ static void updateMenu(){
          glutRemoveMenuItem(1);
     }
 
+
+// add all current objects to both duplicate and remove menus
     int repeats[numMeshes+1] ={0};
     for (int i =3; i < nObjects; i++){
         char menuName[128] = " ";
         char a[numMeshes*4] = " ";
         ++ repeats[sceneObjs[i].meshId];
         strcat(menuName,objectMenuEntries[sceneObjs[i].meshId-1]);
+//if multiple of the same items, give unique indicator
         if(repeats[sceneObjs[i].meshId] >1 ){
             sprintf(a, "%d",repeats[sceneObjs[i].meshId]);
             strcat(strcat(strcat(menuName, " ("), a), ")");
