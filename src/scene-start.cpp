@@ -75,8 +75,7 @@ typedef struct
 
 const int maxObjects = 1024; // Scenes with more than 1024 objects seem unlikely
 
-
-bool lightactive[3] = {true,false,false}; //Spotlight on or off, [0] traditional light, [1] directional, [2] spotlight 
+bool lightactive[3] = {true,false,false}; //Spotlight on or off
 
 SceneObject sceneObjs[maxObjects]; // An array storing the objects currently in the scene.
 int nObjects = 0;                  // How many objects are currenly in the scene.
@@ -293,22 +292,12 @@ static void doRotate()
 
 static void addObject(int id)
 {
-
-    if(id ==56){ //traditional light
-        sceneObjs[1].brightness = 0.2;
-        sceneObjs[1].scale = 0.1;
-        lightactive[0] = true;
-        toolObj = currObject = 1;
-    }else if(id ==57){
-        sceneObjs[2].brightness = 0.2;
-        sceneObjs[2].scale = 0.1;
-        lightactive[1] = true;
-        toolObj = currObject = 2;
-    }else if(id ==58){
-        sceneObjs[3].brightness = 0.2;
-        sceneObjs[3].scale = 0.1;
-        lightactive[2] = true;
-        toolObj = currObject = 3;
+//if adding  light
+    if(56 <=id && id <= 58){
+        sceneObjs[id-55].brightness = 0.2;
+        sceneObjs[id-55].scale = 0.1;
+        lightactive[id-56] = true;
+        toolObj = currObject = id-55;
     }else{
         vec2 currPos = currMouseXYworld(camRotSidewaysDeg);
         sceneObjs[nObjects].loc[0] = currPos[0];
@@ -393,7 +382,7 @@ void init(void)
 
     addObject(55); // Sphere for the first light
     sceneObjs[1].loc = vec4(2.0, 1.0, 1.0, 1.0);
-    sceneObjs[1].scale = 1.0;
+    sceneObjs[1].scale = 0.1;
     sceneObjs[1].texId = 0;        // Plain texture
     sceneObjs[1].brightness = 0.2; // The light's brightness is 5 times this (below).
 
@@ -520,7 +509,7 @@ void display(void)
 
 static void updateMenu(){
 
-// remove all menu items from both duplicate and remove menus
+// remove all menu items from duplicate, remove menus and spotlight menus
     glutSetMenu(duplicateObjectId);
     while(glutGet(GLUT_MENU_NUM_ITEMS) != 0){
         glutRemoveMenuItem(1);
@@ -530,13 +519,12 @@ static void updateMenu(){
     while(glutGet(GLUT_MENU_NUM_ITEMS) != 0){
         glutRemoveMenuItem(1);
     }
-
-// remove spotlight options
     glutSetMenu(lightMenuId);
-    while(glutGet(GLUT_MENU_NUM_ITEMS) != 4){
-        glutRemoveMenuItem(glutGet(GLUT_MENU_NUM_ITEMS));
+    while(glutGet(GLUT_MENU_NUM_ITEMS) != 0){
+        glutRemoveMenuItem(1);
     }
 
+//if light is on, add it to remove menu and light menus
     if(lightactive[0]){
         glutSetMenu(removeObjectId);
         glutAddMenuEntry(" 56 Traditional Light",1);
@@ -544,7 +532,6 @@ static void updateMenu(){
         glutAddMenuEntry("Move Light 1", 70);
         glutAddMenuEntry("R/G/B/All Light 1", 71);
     }
-
     if(lightactive[1]){
         glutSetMenu(removeObjectId);
         glutAddMenuEntry(" 57 Directional Light",2);
@@ -552,8 +539,6 @@ static void updateMenu(){
         glutAddMenuEntry("Move Light 2 (Directional)", 80);
         glutAddMenuEntry("R/G/B/All Light 2", 81);
     }
-
-//if spotlight is on, add it to remove menu and light menu
     if(lightactive[2]){
         glutSetMenu(removeObjectId);
         glutAddMenuEntry(" 58 Spotlight",3);
@@ -561,8 +546,6 @@ static void updateMenu(){
         glutAddMenuEntry("Move Light 3 (Spotlight)", 90);
         glutAddMenuEntry("R/G/B/All Light 3", 91);
     }
-
-
 
 // add all current objects to both duplicate and remove menus
     int repeats[numMeshes+1] ={0};
@@ -577,7 +560,6 @@ static void updateMenu(){
             sprintf(a, "%d",repeats[sceneObjs[i].meshId]);
             strcat(strcat(strcat(menuName, " ("), a), ")");
         }
-
         glutSetMenu(removeObjectId);
         glutAddMenuEntry(menuName,i);
         glutSetMenu(duplicateObjectId);
@@ -602,8 +584,8 @@ static void duplicateObject(int id){
 static void removeObject(int id){
     deactivateTool();
 
-//if removing spotlight
-    if(0 < id && id < 4){
+//if removing lights
+    if( 1<= id && id <=3){
         sceneObjs[id].scale =0.0;
         sceneObjs[id].brightness =0.0;
         lightactive[id-1] = false;
