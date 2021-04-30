@@ -75,7 +75,7 @@ typedef struct
 
 const int maxObjects = 1024; // Scenes with more than 1024 objects seem unlikely
 
-bool lightactive[3] = {true,false,false}; //Spotlight on or off
+bool lightactive[3] = {false,false,false}; //Spotlight on or off
 
 SceneObject sceneObjs[maxObjects]; // An array storing the objects currently in the scene.
 int nObjects = 0;                  // How many objects are currenly in the scene.
@@ -383,9 +383,9 @@ void init(void)
 
     addObject(55); // Sphere for the first light
     sceneObjs[1].loc = vec4(2.0, 1.0, 1.0, 1.0);
-    sceneObjs[1].scale = 0.1;
+    sceneObjs[1].scale = 0.0;
     sceneObjs[1].texId = 0;        // Plain texture
-    sceneObjs[1].brightness = 0.2; // The light's brightness is 5 times this (below).
+    sceneObjs[1].brightness = 0.0; // The light's brightness is 5 times this (below).
 
     addObject(55); // Sphere for the second light
     sceneObjs[2].loc = vec4(2.0, 1.0, 1.0, 1.0);
@@ -517,6 +517,7 @@ void display(void)
 //----------------------------------------------------------------------------
 
 static void updateMenu(){
+    deactivateTool();
 
 // remove all menu items from duplicate, remove menus and spotlight menus
     glutSetMenu(duplicateObjectId);
@@ -542,6 +543,7 @@ static void updateMenu(){
         glutAddMenuEntry("R/G/B/All Light 1", 71);
     }
     if(lightactive[1]){
+
         glutSetMenu(removeObjectId);
         glutAddMenuEntry(" 57 Directional Light",2);
         glutSetMenu(lightMenuId);
@@ -574,6 +576,7 @@ static void updateMenu(){
         glutSetMenu(duplicateObjectId);
         glutAddMenuEntry(menuName,i);
     }
+    glutPostRedisplay();
 }
 
 
@@ -587,7 +590,6 @@ static void duplicateObject(int id){
     }
     sceneObjs[nObjects-1].scale =sceneObjs[id].scale;
     updateMenu();
-    glutPostRedisplay();
 }
 
 static void removeObject(int id){
@@ -595,9 +597,9 @@ static void removeObject(int id){
 
 //if removing lights
     if( 1<= id && id <=3){
+        lightactive[id-1] = false;
         sceneObjs[id].scale =0.0;
         sceneObjs[id].brightness =0.0;
-        lightactive[id-1] = false;
         updateMenu();
         return;
     }
@@ -612,7 +614,6 @@ static void removeObject(int id){
     }
     toolObj = currObject = nObjects--;
     updateMenu();
-    glutPostRedisplay();
 }
 
 

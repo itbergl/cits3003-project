@@ -99,7 +99,7 @@ char textureMenuEntries[numTextures][128] = {
 };
 
 //extra meshes for lights, not true meshes.
-char objectMenuEntries[numMeshes+3][128] = {
+char objectMenuEntries[numMeshes][128] = {
         "1 Thin Dinosaur", "2 Big Dog", "3 Saddle Dinosaur", "4 Dragon", "5 Cleopatra",
         "6 Bone I", "7 Bone II", "8 Rabbit", "9 Long Dragon", "10 Buddha",
         "11 Sitting Rabbit", "12 Frog", "13 Cow", "14 Monster", "15 Sea Horse",
