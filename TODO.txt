@@ -1,2 +1,3 @@
 add comments
 reset camera
+help jake
