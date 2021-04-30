@@ -294,7 +294,7 @@ static void addObject(int id)
 {
 //if adding spotlight
     if(id ==56){
-        sceneObjs[3].brightness = 0.4;
+        sceneObjs[3].brightness = 0.2;
         sceneObjs[3].scale = 0.1;
         spotlight = true;
         toolObj = currObject = 3;
