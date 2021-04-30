@@ -8,7 +8,7 @@
 
 char dataDir[256];  // Stores the path to the models-textures folder.
 const int numTextures = 31;
-const int numMeshes = 58;
+const int numMeshes = 56;
 
 
 // ------Functions to fail with an error mesage then a string or int------ 
@@ -99,7 +99,7 @@ char textureMenuEntries[numTextures][128] = {
 };
 
 //extra meshes for lights, not true meshes.
-char objectMenuEntries[numMeshes+3][128] = {
+char objectMenuEntries[numMeshes][128] = {
         "1 Thin Dinosaur", "2 Big Dog", "3 Saddle Dinosaur", "4 Dragon", "5 Cleopatra",
         "6 Bone I", "7 Bone II", "8 Rabbit", "9 Long Dragon", "10 Buddha",
         "11 Sitting Rabbit", "12 Frog", "13 Cow", "14 Monster", "15 Sea Horse",
@@ -110,8 +110,7 @@ char objectMenuEntries[numMeshes+3][128] = {
         "36 Chihuahua", "37 Sabre-toothed Tiger", "38 Lioness", "39 Fish", "40 Horse (head down)",
         "41 Horse (head up)", "42 Skull", "43 Fighter Jet I", "44 Toad", "45 Convertible",
         "46 Porsche II", "47 Hare", "48 Vintage Car", "49 Fighter Jet II", "50 Gargoyle",
-        "51 Chef", "52 Parasaurolophus", "53 Rooster", "54 T-rex", "55 Sphere", "56 Traditional Light",
-        "57 Directional Light", "58 Spotlight"
+        "51 Chef", "52 Parasaurolophus", "53 Rooster", "54 T-rex", "55 Sphere"
 };
 
 
