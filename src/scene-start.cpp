@@ -30,7 +30,7 @@ using namespace std; // Import the C++ standard functions (e.g., min)
 // IDs for the GLSL program and GLSL variables.
 GLuint shaderProgram;                 // The number identifying the GLSL shader program
 GLuint vPosition, vNormal, vTexCoord; // IDs for vshader input vars (from glGetAttribLocation)
-GLuint projectionU, modelViewU;       // IDs for uniform variables (from glGetUniformLocation)
+GLuint projectionU, modelViewU, viewU;       // IDs for uniform variables (from glGetUniformLocation)
 
 static float viewDist = 1.5;          // Distance from the camera to the centre of the scene
 static float camRotSidewaysDeg = 0;   // rotates the camera sideways around the centre
@@ -370,6 +370,7 @@ void init(void)
 
     projectionU = glGetUniformLocation(shaderProgram, "Projection");
     modelViewU = glGetUniformLocation(shaderProgram, "ModelView");
+    viewU = glGetUniformLocation(shaderProgram, "view");
 
 
     // Objects 0, and 1 are the ground and the first light.
@@ -383,7 +384,7 @@ void init(void)
     sceneObjs[1].loc = vec4(2.0, 1.0, 1.0, 1.0);
     sceneObjs[1].scale = 0.1;
     sceneObjs[1].texId = 0;        // Plain texture
-    sceneObjs[1].brightness = 0.0; // The light's brightness is 5 times this (below).
+    sceneObjs[1].brightness = 0.2; // The light's brightness is 5 times this (below).
 
     addObject(55); // Sphere for the second light
     sceneObjs[2].loc = vec4(2.0, 1.0, 1.0, 1.0);
@@ -459,8 +460,7 @@ void display(void)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     CheckError(); // May report a harmless GL_INVALID_OPERATION with GLEW on the first frame
 
-    // Set the view matrix. To start with this just moves the camera
-    // backwards.  You'll need to add appropriate rotations.
+    // Set the view matrix. 
 
     view = Translate(0.0, 0.0, -viewDist) * RotateX(camRotUpAndOverDeg) * RotateY(camRotSidewaysDeg);
 
@@ -480,6 +480,7 @@ void display(void)
 
     glUniform1fv(glGetUniformLocation(shaderProgram, "LightBrightnessArray"),
                  3, lightBrightness);
+    glUniformMatrix4fv(viewU, 1, GL_TRUE, view);
     CheckError();
 
     for (int i = 0; i < nObjects; i++)

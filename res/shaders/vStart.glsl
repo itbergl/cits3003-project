@@ -5,13 +5,13 @@ attribute vec2 vTexCoord;
 varying vec2 texCoord;
 varying vec3 pos;
 varying vec3 N;
-varying vec4 camerapos;
 varying vec3 orig;
 varying vec3 down;
 
 uniform mat4 ModelView;
 uniform mat4 Projection;
 uniform float texScale;
+uniform mat4 view;
 
 
 void main()
@@ -25,10 +25,8 @@ void main()
     // is uniform across dimensions)
     N = normalize( (ModelView*vec4(vNormal, 0.0)).xyz );
 
-    camerapos = Projection * ModelView * vec4(0.0, 0.0, 0.0, 1.0);
-
-    orig = (ModelView * vec4(0.0, 0.0, 0.0, 1.0)).xyz;
-    down = (ModelView * vec4(0.0, -1.0, 0.0, 1.0)).xyz;
+    orig = (view * vec4(0.0, 0.0, 0.0, 0.0)).xyz;
+    down = (view* vec4(0.0, -1.0, 0.0, 0.0)).xyz;
 
     gl_Position = Projection * ModelView * vpos;
     texCoord = texScale*vTexCoord;
