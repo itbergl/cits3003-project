@@ -64,7 +64,7 @@ vec4 DirectionalLight(float decay, float a, float b, float c) {
 }
 
 vec4 SpotLight(float decay, float a, float b, float c, float ang) {
-    vec3 Lvec = LightPositionArray[0].xyz - pos;
+    vec3 Lvec = LightPositionArray[2].xyz - pos;
 
     // if (acos(dot(normalize(-Lvec), down)) > ang) {
     //     return vec4(0.0,0.0,0.0,0.0);
@@ -76,7 +76,7 @@ vec4 SpotLight(float decay, float a, float b, float c, float ang) {
     }
     
     
-    float brightness = LightBrightnessArray[0];
+    float brightness = LightBrightnessArray[2];
     vec3 avera = ((SpecularProduct.r + SpecularProduct.g + SpecularProduct.b) / 3.0) * vec3(1.0, 1.0, 1.0);
 
     // Unit direction vectors for Blinn-Phong shading calculation
@@ -102,7 +102,6 @@ vec4 SpotLight(float decay, float a, float b, float c, float ang) {
 }
 
 void main() {
-
     vec3 globalAmbient = vec3(0.1, 0.1, 0.1);
     vec3 ambient = AmbientProduct;
     // vec4 color = vec4(0.0, 0.0, 0.0, 1.0);

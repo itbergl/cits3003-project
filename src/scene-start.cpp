@@ -30,7 +30,7 @@ using namespace std; // Import the C++ standard functions (e.g., min)
 // IDs for the GLSL program and GLSL variables.
 GLuint shaderProgram;                 // The number identifying the GLSL shader program
 GLuint vPosition, vNormal, vTexCoord; // IDs for vshader input vars (from glGetAttribLocation)
-GLuint projectionU, modelViewU;       // IDs for uniform variables (from glGetUniformLocation)
+GLuint projectionU, modelViewU, viewU;       // IDs for uniform variables (from glGetUniformLocation)
 
 static float viewDist = 1.5;          // Distance from the camera to the centre of the scene
 static float camRotSidewaysDeg = 0;   // rotates the camera sideways around the centre
@@ -370,6 +370,7 @@ void init(void)
 
     projectionU = glGetUniformLocation(shaderProgram, "Projection");
     modelViewU = glGetUniformLocation(shaderProgram, "ModelView");
+    viewU = glGetUniformLocation(shaderProgram, "view");
 
 
     // Objects 0, and 1 are the ground and the first light.
@@ -479,6 +480,7 @@ void display(void)
 
     glUniform1fv(glGetUniformLocation(shaderProgram, "LightBrightnessArray"),
                  3, lightBrightness);
+    glUniformMatrix4fv(viewU, 1, GL_TRUE, view);
     CheckError();
 
     for (int i = 0; i < nObjects; i++)

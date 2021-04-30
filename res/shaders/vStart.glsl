@@ -11,6 +11,7 @@ varying vec3 down;
 uniform mat4 ModelView;
 uniform mat4 Projection;
 uniform float texScale;
+uniform mat4 view;
 
 
 void main()
@@ -24,10 +25,8 @@ void main()
     // is uniform across dimensions)
     N = normalize( (ModelView*vec4(vNormal, 0.0)).xyz );
 
-    orig = (ModelView * vec4(0.0, 0.0, 0.0, 0.0)).xyz;
-    vec3 downpoint = (ModelView * vec4(0.0, -1.0, 0.0, 0.0)).xyz;
-    down = normalize(downpoint-orig);
-    //down = normalize(
+    orig = (view * vec4(0.0, 0.0, 0.0, 0.0)).xyz;
+    down = (view* vec4(0.0, -1.0, 0.0, 0.0)).xyz;
 
     gl_Position = Projection * ModelView * vpos;
     texCoord = texScale*vTexCoord;
