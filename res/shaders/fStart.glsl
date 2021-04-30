@@ -104,11 +104,11 @@ vec4 SpotLight(float decay, float a, float b, float c, float ang) {
 void main() {
     vec3 globalAmbient = vec3(0.1, 0.1, 0.1);
     vec3 ambient = AmbientProduct;
-    // vec4 color = vec4(0.0, 0.0, 0.0, 1.0);
+
     vec4 color = 0.4*vec4(globalAmbient + ambient, 1.0);
     
-    //color += PointLight(90.0, 1.0, 1.0, 1.0);
-    //color += DirectionalLight(30.0, 1.0, 1.0, 1.0);
+    color += PointLight(90.0, 1.0, 1.0, 1.0);
+    color += DirectionalLight(30.0, 1.0, 1.0, 1.0);
     color += SpotLight(10.0, 0.02, 1.0, 1.0, 0.65);
 
     gl_FragColor = color * texture2D(texture, texCoord * 2.0);
