@@ -292,43 +292,37 @@ static void doRotate()
 
 static void addObject(int id)
 {
-//if adding  light
-    if(56 <=id && id <= 58){
-        sceneObjs[id-55].brightness = 0.2;
-        sceneObjs[id-55].scale = 0.1;
-        lightactive[id-56] = true;
-        toolObj = currObject = id-55;
-    }else{
-        vec2 currPos = currMouseXYworld(camRotSidewaysDeg);
-        sceneObjs[nObjects].loc[0] = currPos[0];
-        sceneObjs[nObjects].loc[1] = 0.0;
-        sceneObjs[nObjects].loc[2] = currPos[1];
-        sceneObjs[nObjects].loc[3] = 1.0;
 
-        sceneObjs[nObjects].angles[0] = 0.0;
-        sceneObjs[nObjects].angles[1] = 180.0;
-        sceneObjs[nObjects].angles[2] = 0.0;
+    vec2 currPos = currMouseXYworld(camRotSidewaysDeg);
+    sceneObjs[nObjects].loc[0] = currPos[0];
+    sceneObjs[nObjects].loc[1] = 0.0;
+    sceneObjs[nObjects].loc[2] = currPos[1];
+    sceneObjs[nObjects].loc[3] = 1.0;
 
-        if (id != 0 && id != 55){
-            sceneObjs[nObjects].scale = 0.005;
-        }else{sceneObjs[nObjects].scale = 0.1; }
+    sceneObjs[nObjects].angles[0] = 0.0;
+    sceneObjs[nObjects].angles[1] = 180.0;
+    sceneObjs[nObjects].angles[2] = 0.0;
 
-        sceneObjs[nObjects].rgb[0] = 0.7;
-        sceneObjs[nObjects].rgb[1] = 0.7;
-        sceneObjs[nObjects].rgb[2] = 0.7;
-        sceneObjs[nObjects].brightness = 1.0;
+    if (id != 0 && id != 55){
+        sceneObjs[nObjects].scale = 0.005;
+    }else{sceneObjs[nObjects].scale = 0.1; }
 
-        sceneObjs[nObjects].diffuse = 1.0;
-        sceneObjs[nObjects].specular = 0.5;
-        sceneObjs[nObjects].ambient = 0.7;
-        sceneObjs[nObjects].shine = 10.0;
+    sceneObjs[nObjects].rgb[0] = 0.7;
+    sceneObjs[nObjects].rgb[1] = 0.7;
+    sceneObjs[nObjects].rgb[2] = 0.7;
+    sceneObjs[nObjects].brightness = 1.0;
 
-        sceneObjs[nObjects].meshId = id;
-        sceneObjs[nObjects].texId = rand() % numTextures;
-        sceneObjs[nObjects].texScale = 2.0;
+    sceneObjs[nObjects].diffuse = 1.0;
+    sceneObjs[nObjects].specular = 0.5;
+    sceneObjs[nObjects].ambient = 0.7;
+    sceneObjs[nObjects].shine = 10.0;
+
+    sceneObjs[nObjects].meshId = id;
+    sceneObjs[nObjects].texId = rand() % numTextures;
+    sceneObjs[nObjects].texScale = 2.0;
         
-        toolObj = currObject = nObjects++;
-    }
+    toolObj = currObject = nObjects++;
+    
     setToolCallbacks(adjustLocXZ, camRotZ(),adjustScaleY, mat2(0.05, 0, 0, 10.0));
     glutPostRedisplay();
 }
@@ -519,7 +513,7 @@ void display(void)
 static void updateMenu(){
     deactivateTool();
 
-// remove all menu items from duplicate, remove menus and spotlight menus
+// remove all menu items from duplicate, remove menus and light menus
     glutSetMenu(duplicateObjectId);
     while(glutGet(GLUT_MENU_NUM_ITEMS) != 0){
         glutRemoveMenuItem(1);
@@ -534,29 +528,29 @@ static void updateMenu(){
         glutRemoveMenuItem(1);
     }
 
-//if light is on, add it to remove menu and light menus
+// update light menus 
+    glutSetMenu(lightMenuId);
     if(lightactive[0]){
-        glutSetMenu(removeObjectId);
-        glutAddMenuEntry(" 56 Traditional Light",1);
-        glutSetMenu(lightMenuId);
-        glutAddMenuEntry("Move Light 1", 70);
-        glutAddMenuEntry("R/G/B/All Light 1", 71);
+        glutAddMenuEntry("Remove Traditional Light",11);
+        glutAddMenuEntry("Move Traditional Light", 70);
+        glutAddMenuEntry("R/G/B/All Traditional Light", 71);
+    }else{
+        glutAddMenuEntry("Add Traditional Light",1);
     }
     if(lightactive[1]){
-
-        glutSetMenu(removeObjectId);
-        glutAddMenuEntry(" 57 Directional Light",2);
-        glutSetMenu(lightMenuId);
-        glutAddMenuEntry("Move Light 2 (Directional)", 80);
-        glutAddMenuEntry("R/G/B/All Light 2", 81);
+        glutAddMenuEntry("Remove Directional Light",12);
+        glutAddMenuEntry("Move Directional Light", 80);
+        glutAddMenuEntry("R/G/B/All Directional Light", 81);
+    }else{
+        glutAddMenuEntry("Add Directional Light",2);
     }
     if(lightactive[2]){
-        glutSetMenu(removeObjectId);
-        glutAddMenuEntry(" 58 Spotlight",3);
-        glutSetMenu(lightMenuId);
-        glutAddMenuEntry("Move Light 3 (Spotlight)", 90);
-        glutAddMenuEntry("R/G/B/All Light 3", 91);
-    }
+        glutAddMenuEntry("Remove Spotlight",13);
+        glutAddMenuEntry("Move Spotlight", 90);
+        glutAddMenuEntry("R/G/B/All Spotlight", 91);
+    }else{
+        glutAddMenuEntry("Add Spotlight",3);
+    }  
 
 // add all current objects to both duplicate and remove menus
     int repeats[numMeshes+1] ={0};
@@ -585,7 +579,7 @@ static void duplicateObject(int id){
     deactivateTool();
     addObject(sceneObjs[id].meshId);
     sceneObjs[nObjects-1].texId =sceneObjs[id].texId;
-    for(int i=0; i <2;i++){
+    for(int i=0; i <3;i++){
         sceneObjs[nObjects-1].angles[i] = sceneObjs[id].angles[i];
     }
     sceneObjs[nObjects-1].scale =sceneObjs[id].scale;
@@ -594,15 +588,6 @@ static void duplicateObject(int id){
 
 static void removeObject(int id){
     deactivateTool();
-
-//if removing lights
-    if( 1<= id && id <=3){
-        lightactive[id-1] = false;
-        sceneObjs[id].scale =0.0;
-        sceneObjs[id].brightness =0.0;
-        updateMenu();
-        return;
-    }
 
     int j = 4;
     for(int i = 4; i <maxObjects; i++){
@@ -703,6 +688,21 @@ static void lightMenu(int id)
         toolObj = 3;
         setToolCallbacks(adjustRedGreen, mat2(1.0, 0, 0, 1.0),
                          adjustBlueBrightness, mat2(1.0, 0, 0, 1.0));
+    }
+    else if (id <= 3){
+        sceneObjs[id].brightness = 0.2;
+        sceneObjs[id].scale = 0.1;
+        lightactive[id-1] = true;
+        toolObj = currObject = id;
+        setToolCallbacks(adjustLocXZ, camRotZ(),adjustScaleY, mat2(0.05, 0, 0, 10.0));
+        glutPostRedisplay();
+        updateMenu();
+    }
+    else if (11 <= id && id <=13){
+        lightactive[id-11] = false;
+        sceneObjs[id-10].scale =0.0;
+        sceneObjs[id-10].brightness =0.0;
+        updateMenu();
     }
     else
     {
@@ -811,7 +811,7 @@ static void mainmenu(int id)
 
 static void makeMenu()
 {
-    int objectId = createArrayMenu(numMeshes, objectMenuEntries, objectMenu);
+    int objectId = createArrayMenu(numMeshes-1, objectMenuEntries, objectMenu);
 
     int materialMenuId = glutCreateMenu(materialMenu);
     glutAddMenuEntry("R/G/B/All", 10);
