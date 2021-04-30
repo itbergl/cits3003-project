@@ -30,7 +30,7 @@ using namespace std; // Import the C++ standard functions (e.g., min)
 // IDs for the GLSL program and GLSL variables.
 GLuint shaderProgram;                 // The number identifying the GLSL shader program
 GLuint vPosition, vNormal, vTexCoord; // IDs for vshader input vars (from glGetAttribLocation)
-GLuint projectionU, modelViewU, viewU;       // IDs for uniform variables (from glGetUniformLocation)
+GLuint projectionU, modelViewU, viewU, spotlightU;       // IDs for uniform variables (from glGetUniformLocation)
 
 static float viewDist = 1.5;          // Distance from the camera to the centre of the scene
 static float camRotSidewaysDeg = 0;   // rotates the camera sideways around the centre
@@ -372,6 +372,7 @@ void init(void)
     projectionU = glGetUniformLocation(shaderProgram, "Projection");
     modelViewU = glGetUniformLocation(shaderProgram, "ModelView");
     viewU = glGetUniformLocation(shaderProgram, "view");
+    spotlightU = glGetUniformLocation(shaderProgram, "SpotlightDirectionMatrix");
 
 
     // Objects 0, and 1 are the ground and the first light.
@@ -432,7 +433,7 @@ void drawMesh(SceneObject sceneObj)
     // Set the model matrix - this should combine translation, rotation and scaling based on what's
     // in the sceneObj structure (see near the top of the program).
 
-    mat4 model = Translate(sceneObj.loc) * Scale(sceneObj.scale) * RotateX(sceneObj.angles[0]) * RotateY(sceneObj.angles[1]);
+    mat4 model = Translate(sceneObj.loc) * Scale(sceneObj.scale) * RotateX(sceneObj.angles[0]) * RotateY(sceneObj.angles[1])* RotateZ(sceneObj.angles[2]);
 
     // Set the model-view matrix for the shaders
     glUniformMatrix4fv(modelViewU, 1, GL_TRUE, view * model);
@@ -488,8 +489,15 @@ void display(void)
 
     glUniform1fv(glGetUniformLocation(shaderProgram, "LightBrightnessArray"),
                  3, lightBrightness);
-    glUniformMatrix4fv(viewU, 1, GL_TRUE, view);
     
+    
+
+    //mat4 spotRot = RotateX(sceneObjs[2].angles[0])*RotateY(sceneObjs[2].angles[1])*RotateZ(sceneObjs[2].angles[2]);
+    mat4 spotRot = RotateY(sceneObjs[3].angles[2])*RotateX(sceneObjs[3].angles[0]);
+    glUniformMatrix4fv(spotlightU, 1, GL_TRUE, spotRot);
+
+    glUniformMatrix4fv(viewU, 1, GL_TRUE, view);
+
     CheckError();
 
     for (int i = 0; i < nObjects; i++)

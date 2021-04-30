@@ -10,7 +10,7 @@ uniform vec3[3] LightRGBrray;
 varying vec3 pos;
 varying vec3 N;
 varying vec3 orig;
-varying vec3 up;
+varying vec3 dir;
 
 vec4 getLight(vec3 Lvec, int lightNo, float decay, float a, float b, float c) {
     vec3 average = ((SpecularProduct.r + SpecularProduct.g + SpecularProduct.b) / 3.0) * vec3(1.0, 1.0, 1.0);
@@ -58,9 +58,9 @@ void main() {
     //spot light
     Lvec = LightPositionArray[2].xyz - pos;
     float ang = 0.65;
-    if(acos(dot(normalize(Lvec), up)) < ang) {
+    if(acos(dot(normalize(-Lvec), dir)) < ang) {
         color += getLight(Lvec, 2, 
-                            10.0, 0.02, 1.0, 1.0);
+                            10000.0, 0.02, 1.0, 1.0);
     }
 
     gl_FragColor = color * texture2D(texture, texCoord * 2.0);
