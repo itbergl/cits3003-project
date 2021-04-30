@@ -285,9 +285,6 @@ static void doRotate()
                      adjustcamSideUp, mat2(400, 0, 0, -90));
 }
 
-
-
-
 //------Add an object to the scene--------------------------------------------
 
 static void addObject(int id)
@@ -373,7 +370,7 @@ void init(void)
     addObject(0); // Square for the ground
     sceneObjs[0].loc = vec4(0.0, 0.0, 0.0, 1.0);
     sceneObjs[0].scale = 10.0;
-    sceneObjs[0].angles[0] = 90.0; // Rotate it.
+    sceneObjs[0].angles[0] = 270.0; // Rotate it.
     sceneObjs[0].texScale = 5.0;   // Repeat the texture.
 
     addObject(55); // Sphere for the first light
@@ -427,7 +424,7 @@ void drawMesh(SceneObject sceneObj)
     // Set the model matrix - this should combine translation, rotation and scaling based on what's
     // in the sceneObj structure (see near the top of the program).
 
-    mat4 model = Translate(sceneObj.loc) * Scale(sceneObj.scale) * RotateX(sceneObj.angles[0]) * RotateY(sceneObj.angles[1])* RotateZ(sceneObj.angles[2]);
+    mat4 model = Translate(sceneObj.loc) * Scale(sceneObj.scale) *RotateZ(sceneObj.angles[2])*RotateY(sceneObj.angles[1])*RotateX(sceneObj.angles[0]);
 
     // Set the model-view matrix for the shaders
     glUniformMatrix4fv(modelViewU, 1, GL_TRUE, view * model);
@@ -929,7 +926,7 @@ void reshape(int width, int height)
     //         that the same part of the scene is visible across the width of
     //         the window.
 
-    GLfloat nearDist = 0.01;
+    GLfloat nearDist = 0.001;
     if ((float)width < (float)height)
     {
         projection = Frustum(-nearDist, nearDist,
