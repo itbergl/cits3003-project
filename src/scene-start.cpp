@@ -75,7 +75,7 @@ typedef struct
 
 const int maxObjects = 1024; // Scenes with more than 1024 objects seem unlikely
 
-bool spotlight = false; //Spotlight on or off
+bool lightactive[3] = {true,false,false}; //Spotlight on or off
 
 SceneObject sceneObjs[maxObjects]; // An array storing the objects currently in the scene.
 int nObjects = 0;                  // How many objects are currenly in the scene.
@@ -292,12 +292,12 @@ static void doRotate()
 
 static void addObject(int id)
 {
-//if adding spotlight
-    if(id ==56){
-        sceneObjs[3].brightness = 0.4;
-        sceneObjs[3].scale = 0.1;
-        spotlight = true;
-        toolObj = currObject = 3;
+//if adding  light
+    if(56 <=id && id <= 58){
+        sceneObjs[id-55].brightness = 0.2;
+        sceneObjs[id-55].scale = 0.1;
+        lightactive[id-56] = true;
+        toolObj = currObject = id-55;
     }else{
         vec2 currPos = currMouseXYworld(camRotSidewaysDeg);
         sceneObjs[nObjects].loc[0] = currPos[0];
@@ -309,8 +309,9 @@ static void addObject(int id)
         sceneObjs[nObjects].angles[1] = 180.0;
         sceneObjs[nObjects].angles[2] = 0.0;
 
-        if (id != 0 && id != 55)
+        if (id != 0 && id != 55){
             sceneObjs[nObjects].scale = 0.005;
+        }else{sceneObjs[nObjects].scale = 0.1; }
 
         sceneObjs[nObjects].rgb[0] = 0.7;
         sceneObjs[nObjects].rgb[1] = 0.7;
@@ -388,9 +389,9 @@ void init(void)
 
     addObject(55); // Sphere for the second light
     sceneObjs[2].loc = vec4(2.0, 1.0, 1.0, 1.0);
-    sceneObjs[2].scale = 0.1;
+    sceneObjs[2].scale = 0.0;
     sceneObjs[2].texId = 0;        // Plain texture
-    sceneObjs[2].brightness = 0.2; // The light's brightness is 5 times this (below).
+    sceneObjs[2].brightness = 0.0; // The light's brightness is 5 times this (below).
 
     addObject(55); // Sphere for the third light
     sceneObjs[3].loc = vec4(2.0, 1.0, 1.0, 1.0);
@@ -509,7 +510,7 @@ void display(void)
 
 static void updateMenu(){
 
-// remove all menu items from both duplicate and remove menus
+// remove all menu items from duplicate, remove menus and spotlight menus
     glutSetMenu(duplicateObjectId);
     while(glutGet(GLUT_MENU_NUM_ITEMS) != 0){
         glutRemoveMenuItem(1);
@@ -519,24 +520,33 @@ static void updateMenu(){
     while(glutGet(GLUT_MENU_NUM_ITEMS) != 0){
         glutRemoveMenuItem(1);
     }
-
-// remove spotlight options
     glutSetMenu(lightMenuId);
-    while(glutGet(GLUT_MENU_NUM_ITEMS) != 4){
-        glutRemoveMenuItem(glutGet(GLUT_MENU_NUM_ITEMS));
+    while(glutGet(GLUT_MENU_NUM_ITEMS) != 0){
+        glutRemoveMenuItem(1);
     }
 
-
-//if spotlight is on, add it to remove menu and light menu
-    if(spotlight){
+//if light is on, add it to remove menu and light menus
+    if(lightactive[0]){
         glutSetMenu(removeObjectId);
-        glutAddMenuEntry(" 56 Spotlight",3);
+        glutAddMenuEntry(" 56 Traditional Light",1);
+        glutSetMenu(lightMenuId);
+        glutAddMenuEntry("Move Light 1", 70);
+        glutAddMenuEntry("R/G/B/All Light 1", 71);
+    }
+    if(lightactive[1]){
+        glutSetMenu(removeObjectId);
+        glutAddMenuEntry(" 57 Directional Light",2);
+        glutSetMenu(lightMenuId);
+        glutAddMenuEntry("Move Light 2 (Directional)", 80);
+        glutAddMenuEntry("R/G/B/All Light 2", 81);
+    }
+    if(lightactive[2]){
+        glutSetMenu(removeObjectId);
+        glutAddMenuEntry(" 58 Spotlight",3);
         glutSetMenu(lightMenuId);
         glutAddMenuEntry("Move Light 3 (Spotlight)", 90);
         glutAddMenuEntry("R/G/B/All Light 3", 91);
     }
-
-
 
 // add all current objects to both duplicate and remove menus
     int repeats[numMeshes+1] ={0};
@@ -551,7 +561,6 @@ static void updateMenu(){
             sprintf(a, "%d",repeats[sceneObjs[i].meshId]);
             strcat(strcat(strcat(menuName, " ("), a), ")");
         }
-
         glutSetMenu(removeObjectId);
         glutAddMenuEntry(menuName,i);
         glutSetMenu(duplicateObjectId);
@@ -576,11 +585,11 @@ static void duplicateObject(int id){
 static void removeObject(int id){
     deactivateTool();
 
-//if removing spotlight
-    if(id ==3){
-        sceneObjs[3].scale =0.0;
-        sceneObjs[3].brightness =0.0;
-        spotlight = false;
+//if removing lights
+    if( 1<= id && id <=3){
+        sceneObjs[id].scale =0.0;
+        sceneObjs[id].brightness =0.0;
+        lightactive[id-1] = false;
         updateMenu();
         return;
     }
@@ -803,12 +812,7 @@ static void makeMenu()
     int groundMenuId = createArrayMenu(numTextures, textureMenuEntries, groundMenu);
 
     lightMenuId = glutCreateMenu(lightMenu);
-    glutAddMenuEntry("Move Light 1", 70);
-    glutAddMenuEntry("R/G/B/All Light 1", 71);
-    glutAddMenuEntry("Move Light 2 (Directional)", 80);
-    glutAddMenuEntry("R/G/B/All Light 2", 81);
-    glutAddMenuEntry("Move Light 3 (Spotlight)", 90);
-    glutAddMenuEntry("R/G/B/All Light 2", 91);
+
 
     removeObjectId = glutCreateMenu(removeObject);
     duplicateObjectId = glutCreateMenu(duplicateObject);
