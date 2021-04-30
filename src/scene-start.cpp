@@ -487,7 +487,8 @@ void display(void)
     
 
     //mat4 spotRot = RotateX(sceneObjs[2].angles[0])*RotateY(sceneObjs[2].angles[1])*RotateZ(sceneObjs[2].angles[2]);
-    mat4 spotRot = RotateY(sceneObjs[3].angles[2])*RotateX(sceneObjs[3].angles[0]);
+    
+    mat4 spotRot = RotateY(sceneObjs[3].angles[0])*RotateX(sceneObjs[3].angles[2]);
     glUniformMatrix4fv(spotlightU, 1, GL_TRUE, spotRot);
 
     glUniformMatrix4fv(viewU, 1, GL_TRUE, view);
@@ -539,11 +540,11 @@ static void updateMenu(){
 // update light menus 
     glutSetMenu(lightMenuId);
     if(lightactive[0]){
-        glutAddMenuEntry("Remove Traditional Light",11);
-        glutAddMenuEntry("Move Traditional Light", 70);
-        glutAddMenuEntry("R/G/B/All Traditional Light", 71);
+        glutAddMenuEntry("Remove Point Light",11);
+        glutAddMenuEntry("Move Point Light", 70);
+        glutAddMenuEntry("R/G/B/All Point Light", 71);
     }else{
-        glutAddMenuEntry("Add Traditional Light",1);
+        glutAddMenuEntry("Add Point Light",1);
     }
     if(lightactive[1]){
         glutAddMenuEntry("Remove Directional Light",12);
