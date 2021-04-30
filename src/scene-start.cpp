@@ -478,10 +478,18 @@ void display(void)
     lightBrightness[1] = sceneObjs[2].brightness;
     lightBrightness[2] = sceneObjs[3].brightness;
 
+    vec3 lightRGB[3];
+    lightRGB[0] = sceneObjs[1].rgb;
+    lightRGB[1] = sceneObjs[2].rgb;
+    lightRGB[2] = sceneObjs[3].rgb;
+
+    glUniform3fv(glGetUniformLocation(shaderProgram, "LightRGBrray"),
+                 3, *lightRGB);
 
     glUniform1fv(glGetUniformLocation(shaderProgram, "LightBrightnessArray"),
                  3, lightBrightness);
     glUniformMatrix4fv(viewU, 1, GL_TRUE, view);
+    
     CheckError();
 
     for (int i = 0; i < nObjects; i++)
