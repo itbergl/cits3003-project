@@ -309,8 +309,9 @@ static void addObject(int id)
         sceneObjs[nObjects].angles[1] = 180.0;
         sceneObjs[nObjects].angles[2] = 0.0;
 
-        if (id != 0 && id != 55)
+        if (id != 0 && id != 55){
             sceneObjs[nObjects].scale = 0.005;
+        }else{sceneObjs[nObjects].scale = 0.1; }
 
         sceneObjs[nObjects].rgb[0] = 0.7;
         sceneObjs[nObjects].rgb[1] = 0.7;
