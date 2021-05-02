@@ -37,6 +37,7 @@ static float SIDEWAYSINITANGLE = 0; //so we can return to this angle
 static float UPANDOVERINITANGLE = 20; //so we can return to this angle 
 static float camRotSidewaysDeg = SIDEWAYSINITANGLE; // rotates the camera sideways around the centre
 static float camRotUpAndOverDeg = UPANDOVERINITANGLE; // rotates the camera up and over the centre.
+static float spotlightangle = 0.65;
 
 mat4 projection; // Projection matrix - set in the reshape function
 mat4 view;       // View matrix - set in the display function.
@@ -392,6 +393,7 @@ void init(void)
     sceneObjs[3].scale = 0.0;
     sceneObjs[3].texId = 0;        // Plain texture
     sceneObjs[3].brightness = 0.0; // The light's brightness is 5 times this (below).
+    sceneObjs[3].angles[0] = -180;
     addObject(rand() % numMeshes); // A test mesh
 
     // We need to enable the depth test to discard fragments that
@@ -487,8 +489,12 @@ void display(void)
 
     //mat4 spotRot = RotateX(sceneObjs[2].angles[0])*RotateY(sceneObjs[2].angles[1])*RotateZ(sceneObjs[2].angles[2]);
     
-    mat4 spotRot = RotateY(sceneObjs[3].angles[0])*RotateX(sceneObjs[3].angles[2]);
+    mat4 spotRot = RotateX(-sceneObjs[3].angles[0])*RotateZ(-sceneObjs[3].angles[1]);
     glUniformMatrix4fv(spotlightU, 1, GL_TRUE, spotRot);
+
+    // const GLfloat ang = (GLfloat)spotlightangle;
+    // glUniform1fv(glGetUniformLocation(shaderProgram, "SpotlightAngle"),
+    //              1, *ang);
 
     glUniformMatrix4fv(viewU, 1, GL_TRUE, view);
 
