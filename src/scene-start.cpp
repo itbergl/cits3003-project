@@ -492,9 +492,9 @@ void display(void)
     mat4 spotRot = RotateX(-sceneObjs[3].angles[0])*RotateZ(-sceneObjs[3].angles[1]);
     glUniformMatrix4fv(spotlightU, 1, GL_TRUE, spotRot);
 
-    // const GLfloat ang = (GLfloat)spotlightangle;
-    // glUniform1fv(glGetUniformLocation(shaderProgram, "SpotlightAngle"),
-    //              1, *ang);
+    const GLfloat ang = (GLfloat)spotlightangle;
+    glUniform1f(glGetUniformLocation(shaderProgram, "SpotlightAngle"),
+                ang);
 
     glUniformMatrix4fv(viewU, 1, GL_TRUE, view);
 
@@ -794,6 +794,10 @@ static void adjustAngleYX(vec2 angle_yx)
     sceneObjs[currObject].angles[0] += angle_yx[1];
 }
 
+static void adjustAngleZAngle(vec2 az_sa) {
+    spotlightangle += az_sa[0];
+}
+
 static void adjustAngleZTexscale(vec2 az_ts)
 {
     sceneObjs[currObject].angles[2] += az_ts[0];
@@ -813,8 +817,15 @@ static void mainmenu(int id)
         doRotate();
     if (id == 55 && currObject >= 0)
     {
-        setToolCallbacks(adjustAngleYX, mat2(400, 0, 0, -400),
+        if (currObject == 3) //spotlight
+        {
+            setToolCallbacks(adjustAngleYX, mat2(400, 0, 0, -400),
+                         adjustAngleZAngle, mat2(10, 0, 0, 0));
+        }
+        else {
+            setToolCallbacks(adjustAngleYX, mat2(400, 0, 0, -400),
                          adjustAngleZTexscale, mat2(400, 0, 0, 15));
+        }
     }
     if (id == 99)
         exit(0);

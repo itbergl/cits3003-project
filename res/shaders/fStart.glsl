@@ -6,6 +6,7 @@ uniform float Shininess;
 uniform vec4[3] LightPositionArray;
 uniform float[3] LightBrightnessArray;
 uniform vec3[3] LightRGBrray;
+uniform float SpotlightAngle;
 
 varying vec3 pos;
 varying vec3 N;
@@ -64,8 +65,7 @@ void main() {
 
     //spot light
     Lvec = LightPositionArray[2].xyz - pos;
-    float ang = 0.65;
-    if(acos(dot(normalize(-Lvec), dir)) < ang) {
+    if(acos(dot(normalize(-Lvec), dir)) < SpotlightAngle) {
         color += getLightContribution(Lvec, 2, 
                             15.0, 0.02, 1.0, 1.0);
     }
