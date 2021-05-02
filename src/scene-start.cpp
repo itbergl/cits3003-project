@@ -33,8 +33,10 @@ GLuint vPosition, vNormal, vTexCoord; // IDs for vshader input vars (from glGetA
 GLuint projectionU, modelViewU, viewU, spotlightU;       // IDs for uniform variables (from glGetUniformLocation)
 
 static float viewDist = 1.5;          // Distance from the camera to the centre of the scene
-static float camRotSidewaysDeg = 0;   // rotates the camera sideways around the centre
-static float camRotUpAndOverDeg = 20; // rotates the camera up and over the centre.
+static float SIDEWAYSINITANGLE = 0; //so we can return to this angle 
+static float UPANDOVERINITANGLE = 20; //so we can return to this angle 
+static float camRotSidewaysDeg = SIDEWAYSINITANGLE; // rotates the camera sideways around the centre
+static float camRotUpAndOverDeg = UPANDOVERINITANGLE; // rotates the camera up and over the centre.
 
 mat4 projection; // Projection matrix - set in the reshape function
 mat4 view;       // View matrix - set in the display function.
@@ -876,6 +878,11 @@ void keyboard(unsigned char key, int x, int y)
             zoomOut();
         }
         break;
+    }
+    case ' ':
+    {
+        camRotSidewaysDeg = SIDEWAYSINITANGLE;
+        camRotUpAndOverDeg = UPANDOVERINITANGLE;
     }
     }
 }
