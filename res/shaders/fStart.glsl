@@ -50,25 +50,22 @@ void main() {
     //ambient light
     vec3 globalAmbient = vec3(0.1, 0.1, 0.1);
     vec3 ambient = AmbientProduct;
-    vec4 color = 0.5* vec4(globalAmbient + ambient, 1.0);
+    vec4 color = 0.5 * vec4(globalAmbient + ambient, 1.0);
 
     vec3 Lvec;
     //point light
     Lvec = LightPositionArray[0].xyz - pos;
-    color += getLightContribution(Lvec, 0, 
-                        90.0, 1.0, 1.0, 1.0);
+    color += getLightContribution(Lvec, 0, 90.0, 1.0, 1.0, 1.0);
 
     //directional light
     Lvec = LightPositionArray[1].xyz - orig;
-    color += getLightContribution(Lvec, 1, 
-                        30.0, 1.0, 1.0, 1.0);
+    color += getLightContribution(Lvec, 1, 30.0, 1.0, 1.0, 1.0);
 
     //spot light
-    Lvec = LightPositionArray[2].xyz - pos;
-    if(acos(dot(normalize(-Lvec), dir)) < SpotlightAngle) {
-        if (LightBrightnessArray[2] > 0.00001) {
-            color += getLightContribution(Lvec, 2, 
-                                15.0, 0.02, 1.0, 1.0);
+    if(LightBrightnessArray[2] > 0.00001) {
+        Lvec = LightPositionArray[2].xyz - pos;
+        if(acos(dot(normalize(-Lvec), dir)) < SpotlightAngle) {
+            color += getLightContribution(Lvec, 2, 15.0, 0.02, 1.0, 1.0);
         }
     }
 
