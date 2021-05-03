@@ -644,8 +644,9 @@ static void groundMenu(int id)
 
 static void adjustBrightnessY(vec2 by)
 {
-    if (sceneObjs[toolObj].brightness + by[0] > 0.0) {
-        sceneObjs[toolObj].brightness += by[0];
+    float updated = sceneObjs[toolObj].brightness + by[0];
+    if (updated > 0) {
+        sceneObjs[toolObj].brightness = updated;
     }
 
     sceneObjs[toolObj].brightness = max(sceneObjs[toolObj].brightness, (float)0.0);//
@@ -794,8 +795,13 @@ static void adjustAngleYX(vec2 angle_yx)
     sceneObjs[currObject].angles[0] += angle_yx[1];
 }
 
-static void adjustAngleZAngle(vec2 az_sa) {
-    spotlightangle += az_sa[0];
+static void adjustSpotlight(vec2 ang) {
+    float updated = spotlightangle + ang[0];
+    // angle should be no less than 0 and no more than 90 to 
+    // preserve spotlightness
+    if (updated > 0 && updated < 90) {
+        spotlightangle = updated;
+    }
 }
 
 static void adjustAngleZTexscale(vec2 az_ts)
@@ -820,7 +826,7 @@ static void mainmenu(int id)
         if (currObject == 3) //spotlight
         {
             setToolCallbacks(adjustAngleYX, mat2(400, 0, 0, -400),
-                         adjustAngleZAngle, mat2(10, 0, 0, 0));
+                         adjustSpotlight, mat2(10, 0, 0, 0));
         }
         else {
             setToolCallbacks(adjustAngleYX, mat2(400, 0, 0, -400),
