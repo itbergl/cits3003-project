@@ -66,8 +66,10 @@ void main() {
     //spot light
     Lvec = LightPositionArray[2].xyz - pos;
     if(acos(dot(normalize(-Lvec), dir)) < SpotlightAngle) {
-        color += getLightContribution(Lvec, 2, 
-                            15.0, 0.02, 1.0, 1.0);
+        if (LightBrightnessArray[2] > 0.00001) {
+            color += getLightContribution(Lvec, 2, 
+                                15.0, 0.02, 1.0, 1.0);
+        }
     }
 
     gl_FragColor = color * texture2D(texture, texCoord * 2.0);
