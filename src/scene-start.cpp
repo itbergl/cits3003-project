@@ -1,7 +1,6 @@
 
 #include "Angel.h"
 
-
 // Open Asset Importer header files (in ../../assimp--3.0.1270/include)
 // This is a standard open source library for loading meshes, see gnatidread.h
 #include <assimp/cimport.h>
@@ -28,16 +27,16 @@ GLint windowHeight = 640, windowWidth = 960;
 using namespace std; // Import the C++ standard functions (e.g., min)
 
 // IDs for the GLSL program and GLSL variables.
-GLuint shaderProgram;                 // The number identifying the GLSL shader program
-GLuint vPosition, vNormal, vTexCoord; // IDs for vshader input vars (from glGetAttribLocation)
-GLuint projectionU, modelViewU, viewU, spotlightU;       // IDs for uniform variables (from glGetUniformLocation)
+GLuint shaderProgram;                              // The number identifying the GLSL shader program
+GLuint vPosition, vNormal, vTexCoord;              // IDs for vshader input vars (from glGetAttribLocation)
+GLuint projectionU, modelViewU, viewU, spotlightU; // IDs for uniform variables (from glGetUniformLocation)
 
-static float viewDist = 1.5;          // Distance from the camera to the centre of the scene
-static float SIDEWAYSINITANGLE = 0; //so we can return to this angle 
-static float UPANDOVERINITANGLE = 20; //so we can return to this angle 
-static float camRotSidewaysDeg = SIDEWAYSINITANGLE; // rotates the camera sideways around the centre
+static float viewDist = 1.5;                          // Distance from the camera to the centre of the scene
+static float SIDEWAYSINITANGLE = 0;                   //so we can return to this angle
+static float UPANDOVERINITANGLE = 20;                 //so we can return to this angle
+static float camRotSidewaysDeg = SIDEWAYSINITANGLE;   // rotates the camera sideways around the centre
 static float camRotUpAndOverDeg = UPANDOVERINITANGLE; // rotates the camera up and over the centre.
-static float spotlightangle = 0.65;
+static float spotlightangle = 0.65;                   //TODO comment
 
 mat4 projection; // Projection matrix - set in the reshape function
 mat4 view;       // View matrix - set in the display function.
@@ -78,15 +77,15 @@ typedef struct
 
 const int maxObjects = 1024; // Scenes with more than 1024 objects seem unlikely
 
-bool lightactive[3] = {false,false,false}; //Spotlight on or off
+bool lightactive[3] = {false, false, false}; //Spotlight on or off
 
 SceneObject sceneObjs[maxObjects]; // An array storing the objects currently in the scene.
 int nObjects = 0;                  // How many objects are currenly in the scene.
 int currObject = -1;               // The current object
 int toolObj = -1;                  // The object currently being modified
-int removeObjectId;
-int duplicateObjectId;
-int lightMenuId;
+int removeObjectId;                //TODO comment
+int duplicateObjectId;             //TODO comment
+int lightMenuId;                   //TODO comment
 
 //----------------------------------------------------------------------------
 //
@@ -303,9 +302,14 @@ static void addObject(int id)
     sceneObjs[nObjects].angles[1] = 180.0;
     sceneObjs[nObjects].angles[2] = 0.0;
 
-    if (id != 0 && id != 55){
+    if (id != 0 && id != 55)
+    {
         sceneObjs[nObjects].scale = 0.005;
-    }else{sceneObjs[nObjects].scale = 0.1; }
+    }
+    else
+    {
+        sceneObjs[nObjects].scale = 0.1;
+    }
 
     sceneObjs[nObjects].rgb[0] = 0.7;
     sceneObjs[nObjects].rgb[1] = 0.7;
@@ -320,10 +324,10 @@ static void addObject(int id)
     sceneObjs[nObjects].meshId = id;
     sceneObjs[nObjects].texId = rand() % numTextures;
     sceneObjs[nObjects].texScale = 2.0;
-        
+
     toolObj = currObject = nObjects++;
-    
-    setToolCallbacks(adjustLocXZ, camRotZ(),adjustScaleY, mat2(0.05, 0, 0, 10.0));
+
+    setToolCallbacks(adjustLocXZ, camRotZ(), adjustScaleY, mat2(0.05, 0, 0, 10.0));
     glutPostRedisplay();
 }
 
@@ -368,13 +372,12 @@ void init(void)
     viewU = glGetUniformLocation(shaderProgram, "view");
     spotlightU = glGetUniformLocation(shaderProgram, "SpotlightDirectionMatrix");
 
-
     // Objects 0, and 1 are the ground and the first light.
     addObject(0); // Square for the ground
     sceneObjs[0].loc = vec4(0.0, 0.0, 0.0, 1.0);
     sceneObjs[0].scale = 10.0;
     sceneObjs[0].angles[0] = 270.0; // Rotate it.
-    sceneObjs[0].texScale = 5.0;   // Repeat the texture.
+    sceneObjs[0].texScale = 5.0;    // Repeat the texture.
 
     addObject(55); // Sphere for the first light
     sceneObjs[1].loc = vec4(2.0, 1.0, 1.0, 1.0);
@@ -424,11 +427,10 @@ void drawMesh(SceneObject sceneObj)
     // Set the projection matrix for the shaders
     glUniformMatrix4fv(projectionU, 1, GL_TRUE, projection);
 
-
     // Set the model matrix - this should combine translation, rotation and scaling based on what's
     // in the sceneObj structure (see near the top of the program).
 
-    mat4 model = Translate(sceneObj.loc) * Scale(sceneObj.scale) *RotateZ(sceneObj.angles[2])*RotateY(sceneObj.angles[1])*RotateX(sceneObj.angles[0]);
+    mat4 model = Translate(sceneObj.loc) * Scale(sceneObj.scale) * RotateZ(sceneObj.angles[2]) * RotateY(sceneObj.angles[1]) * RotateX(sceneObj.angles[0]);
 
     // Set the model-view matrix for the shaders
     glUniformMatrix4fv(modelViewU, 1, GL_TRUE, view * model);
@@ -457,7 +459,7 @@ void display(void)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     CheckError(); // May report a harmless GL_INVALID_OPERATION with GLEW on the first frame
 
-    // Set the view matrix. 
+    // Set the view matrix.
 
     view = Translate(0.0, 0.0, -viewDist) * RotateX(camRotUpAndOverDeg) * RotateY(camRotSidewaysDeg);
 
@@ -484,12 +486,8 @@ void display(void)
 
     glUniform1fv(glGetUniformLocation(shaderProgram, "LightBrightnessArray"),
                  3, lightBrightness);
-    
-    
 
-    //mat4 spotRot = RotateX(sceneObjs[2].angles[0])*RotateY(sceneObjs[2].angles[1])*RotateZ(sceneObjs[2].angles[2]);
-    
-    mat4 spotRot = RotateX(-sceneObjs[3].angles[0])*RotateZ(-sceneObjs[3].angles[1]);
+    mat4 spotRot = RotateX(-sceneObjs[3].angles[0]) * RotateZ(-sceneObjs[3].angles[1]);
     glUniformMatrix4fv(spotlightU, 1, GL_TRUE, spotRot);
 
     const GLfloat ang = (GLfloat)spotlightangle;
@@ -524,88 +522,106 @@ void display(void)
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
 
-static void updateMenu(){
+static void updateMenu()
+{
     deactivateTool();
 
-// remove all menu items from duplicate, remove menus and light menus
+    // remove all menu items from duplicate, remove menus and light menus
     glutSetMenu(duplicateObjectId);
-    while(glutGet(GLUT_MENU_NUM_ITEMS) != 0){
+    while (glutGet(GLUT_MENU_NUM_ITEMS) != 0)
+    {
         glutRemoveMenuItem(1);
     }
 
-    glutSetMenu(removeObjectId); 
-    while(glutGet(GLUT_MENU_NUM_ITEMS) != 0){
+    glutSetMenu(removeObjectId);
+    while (glutGet(GLUT_MENU_NUM_ITEMS) != 0)
+    {
         glutRemoveMenuItem(1);
     }
     glutSetMenu(lightMenuId);
-    while(glutGet(GLUT_MENU_NUM_ITEMS) != 0){
+    while (glutGet(GLUT_MENU_NUM_ITEMS) != 0)
+    {
         glutRemoveMenuItem(1);
     }
 
-// update light menus 
+    // update light menus
     glutSetMenu(lightMenuId);
-    if(lightactive[0]){
-        glutAddMenuEntry("Remove Point Light",11);
+    if (lightactive[0])
+    {
+        glutAddMenuEntry("Remove Point Light", 11);
         glutAddMenuEntry("Move Point Light", 70);
         glutAddMenuEntry("R/G/B/All Point Light", 71);
-    }else{
-        glutAddMenuEntry("Add Point Light",1);
     }
-    if(lightactive[1]){
-        glutAddMenuEntry("Remove Directional Light",12);
+    else
+    {
+        glutAddMenuEntry("Add Point Light", 1);
+    }
+    if (lightactive[1])
+    {
+        glutAddMenuEntry("Remove Directional Light", 12);
         glutAddMenuEntry("Move Directional Light", 80);
         glutAddMenuEntry("R/G/B/All Directional Light", 81);
-    }else{
-        glutAddMenuEntry("Add Directional Light",2);
     }
-    if(lightactive[2]){
-        glutAddMenuEntry("Remove Spotlight",13);
+    else
+    {
+        glutAddMenuEntry("Add Directional Light", 2);
+    }
+    if (lightactive[2])
+    {
+        glutAddMenuEntry("Remove Spotlight", 13);
         glutAddMenuEntry("Move Spotlight", 90);
         glutAddMenuEntry("R/G/B/All Spotlight", 91);
-    }else{
-        glutAddMenuEntry("Add Spotlight",3);
-    }  
+    }
+    else
+    {
+        glutAddMenuEntry("Add Spotlight", 3);
+    }
 
-// add all current objects to both duplicate and remove menus
-    int repeats[numMeshes+1] ={0};
-    for (int i =4; i < nObjects; i++){
+    // add all current objects to both duplicate and remove menus
+    int repeats[numMeshes + 1] = {0};
+    for (int i = 4; i < nObjects; i++)
+    {
         char menuName[128] = " ";
-        char a[numMeshes*4] = " ";
-        ++ repeats[sceneObjs[i].meshId];
-        strcat(menuName,objectMenuEntries[sceneObjs[i].meshId-1]);
+        char a[numMeshes * 4] = " ";
+        ++repeats[sceneObjs[i].meshId];
+        strcat(menuName, objectMenuEntries[sceneObjs[i].meshId - 1]);
 
-//if multiple of the same items, give unique indicator
-        if(repeats[sceneObjs[i].meshId] >1 ){
-            sprintf(a, "%d",repeats[sceneObjs[i].meshId]);
+        //if multiple of the same items, give unique indicator
+        if (repeats[sceneObjs[i].meshId] > 1)
+        {
+            sprintf(a, "%d", repeats[sceneObjs[i].meshId]);
             strcat(strcat(strcat(menuName, " ("), a), ")");
         }
         glutSetMenu(removeObjectId);
-        glutAddMenuEntry(menuName,i);
+        glutAddMenuEntry(menuName, i);
         glutSetMenu(duplicateObjectId);
-        glutAddMenuEntry(menuName,i);
+        glutAddMenuEntry(menuName, i);
     }
     glutPostRedisplay();
 }
 
-
-///TODO (maybe?)
-static void duplicateObject(int id){
+static void duplicateObject(int id)
+{
     deactivateTool();
     addObject(sceneObjs[id].meshId);
-    sceneObjs[nObjects-1].texId =sceneObjs[id].texId;
-    for(int i=0; i <3;i++){
-        sceneObjs[nObjects-1].angles[i] = sceneObjs[id].angles[i];
+    sceneObjs[nObjects - 1].texId = sceneObjs[id].texId;
+    for (int i = 0; i < 3; i++)
+    {
+        sceneObjs[nObjects - 1].angles[i] = sceneObjs[id].angles[i];
     }
-    sceneObjs[nObjects-1].scale =sceneObjs[id].scale;
+    sceneObjs[nObjects - 1].scale = sceneObjs[id].scale;
     updateMenu();
 }
 
-static void removeObject(int id){
+static void removeObject(int id)
+{
     deactivateTool();
 
     int j = 4;
-    for(int i = 4; i <maxObjects; i++){
-        if(i ==id){
+    for (int i = 4; i < maxObjects; i++)
+    {
+        if (i == id)
+        {
             j++;
         }
         sceneObjs[i] = sceneObjs[j];
@@ -615,14 +631,11 @@ static void removeObject(int id){
     updateMenu();
 }
 
-
-
 static void objectMenu(int id)
 {
     deactivateTool();
     addObject(id);
     updateMenu();
-    
 }
 
 static void texMenu(int id)
@@ -645,11 +658,12 @@ static void groundMenu(int id)
 static void adjustBrightnessY(vec2 by)
 {
     float updated = sceneObjs[toolObj].brightness + by[0];
-    if (updated > 0) {
+    if (updated > 0)
+    {
         sceneObjs[toolObj].brightness = updated;
     }
 
-    sceneObjs[toolObj].brightness = max(sceneObjs[toolObj].brightness, (float)0.0);//
+    sceneObjs[toolObj].brightness = max(sceneObjs[toolObj].brightness, (float)0.0); //
     sceneObjs[toolObj].loc[1] += by[1];
 }
 
@@ -704,19 +718,21 @@ static void lightMenu(int id)
         setToolCallbacks(adjustRedGreen, mat2(1.0, 0, 0, 1.0),
                          adjustBlueBrightness, mat2(1.0, 0, 0, 1.0));
     }
-    else if (id <= 3){
+    else if (id <= 3)
+    {
         sceneObjs[id].brightness = 0.2;
         sceneObjs[id].scale = 0.1;
-        lightactive[id-1] = true;
+        lightactive[id - 1] = true;
         toolObj = currObject = id;
-        setToolCallbacks(adjustLocXZ, camRotZ(),adjustScaleY, mat2(0.05, 0, 0, 10.0));
+        setToolCallbacks(adjustLocXZ, camRotZ(), adjustScaleY, mat2(0.05, 0, 0, 10.0));
         glutPostRedisplay();
         updateMenu();
     }
-    else if (11 <= id && id <=13){
-        lightactive[id-11] = false;
-        sceneObjs[id-10].scale =0.0;
-        sceneObjs[id-10].brightness =0.0;
+    else if (11 <= id && id <= 13)
+    {
+        lightactive[id - 11] = false;
+        sceneObjs[id - 10].scale = 0.0;
+        sceneObjs[id - 10].brightness = 0.0;
         updateMenu();
     }
     else
@@ -751,7 +767,6 @@ static int createArrayMenu(int size, const char menuEntries[][128], void (*menuF
     return menuId;
 }
 
-//CHANGE POSITION TODO + x and y arbitary (rememeber what these do)
 static void adjustDiffuse(vec2 ad)
 {
     sceneObjs[toolObj].ambient += ad[0];
@@ -787,19 +802,19 @@ static void materialMenu(int id)
     }
 }
 
-
-
 static void adjustAngleYX(vec2 angle_yx)
 {
     sceneObjs[currObject].angles[1] += angle_yx[0];
     sceneObjs[currObject].angles[0] += angle_yx[1];
 }
 
-static void adjustSpotlight(vec2 ang) {
+static void adjustSpotlight(vec2 ang)
+{
     float updated = spotlightangle + ang[0];
-    // angle should be no less than 0 and no more than 90 to 
+    // angle should be no less than 0 and no more than 90 to
     // preserve spotlightness
-    if (updated > 0 && updated < 90) {
+    if (updated > 0 && updated < 90)
+    {
         spotlightangle = updated;
     }
 }
@@ -826,23 +841,21 @@ static void mainmenu(int id)
         if (currObject == 3) //spotlight
         {
             setToolCallbacks(adjustAngleYX, mat2(400, 0, 0, -400),
-                         adjustSpotlight, mat2(10, 0, 0, 0));
+                             adjustSpotlight, mat2(10, 0, 0, 0));
         }
-        else {
+        else
+        {
             setToolCallbacks(adjustAngleYX, mat2(400, 0, 0, -400),
-                         adjustAngleZTexscale, mat2(400, 0, 0, 15));
+                             adjustAngleZTexscale, mat2(400, 0, 0, 15));
         }
     }
     if (id == 99)
         exit(0);
 }
 
-
-
-
 static void makeMenu()
 {
-    int objectId = createArrayMenu(numMeshes-1, objectMenuEntries, objectMenu);
+    int objectId = createArrayMenu(numMeshes - 1, objectMenuEntries, objectMenu);
 
     int materialMenuId = glutCreateMenu(materialMenu);
     glutAddMenuEntry("R/G/B/All", 10);
@@ -853,15 +866,14 @@ static void makeMenu()
 
     lightMenuId = glutCreateMenu(lightMenu);
 
-
     removeObjectId = glutCreateMenu(removeObject);
     duplicateObjectId = glutCreateMenu(duplicateObject);
-	updateMenu();
+    updateMenu();
 
     glutCreateMenu(mainmenu);
     glutAddMenuEntry("Rotate/Move Camera", 50);
     glutAddSubMenu("Add object", objectId);
-    glutAddSubMenu("Remove object",removeObjectId);
+    glutAddSubMenu("Remove object", removeObjectId);
     glutAddSubMenu("Duplicate object", duplicateObjectId);
     glutAddMenuEntry("Position/Scale", 41);
     glutAddMenuEntry("Rotation/Texture Scale", 55);
@@ -872,8 +884,6 @@ static void makeMenu()
     glutAddMenuEntry("EXIT", 99);
     glutAttachMenu(GLUT_RIGHT_BUTTON);
 }
-
-
 
 //----------------------------------------------------------------------------
 
