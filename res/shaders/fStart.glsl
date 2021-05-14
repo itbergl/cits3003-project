@@ -43,7 +43,7 @@ vec4 getLightContribution(vec3 Lvec, int lightNo, float decay, float a, float b,
 
     //constant for light attenuation
     float decayconstant = decay / (a * d * d + b * d + c);
-    return decayconstant * vec4(brightness * rgb * (diffuse + specular), 0.0);
+    return decayconstant * brightness * vec4(rgb * (diffuse + specular), 0.0);
 }
 
 void main() {
