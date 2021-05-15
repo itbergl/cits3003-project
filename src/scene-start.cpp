@@ -386,7 +386,7 @@ void init(void)
     sceneObjs[1].brightness = 0.0; // The light's brightness is 5 times this (below).
 
     addObject(55); // Sphere for the second light
-    sceneObjs[2].loc = vec4(2.0, 1.0, 1.0, 1.0);
+    sceneObjs[2].loc = vec4(2.0, 1.0, 1.0, 0.0);
     sceneObjs[2].scale = 0.0;
     sceneObjs[2].texId = 0;        // Plain texture
     sceneObjs[2].brightness = 0.0; // The light's brightness is 5 times this (below).
@@ -464,11 +464,11 @@ void display(void)
     view = Translate(0.0, 0.0, -viewDist) * RotateX(camRotUpAndOverDeg) * RotateY(camRotSidewaysDeg);
 
     vec4 lightPosition[3];
-    lightPosition[0] = view * sceneObjs[1].loc;
-    lightPosition[1] = view * sceneObjs[2].loc;
-    lightPosition[2] = view * sceneObjs[3].loc;
+    lightPosition[0] = sceneObjs[1].loc;
+    lightPosition[1] = sceneObjs[2].loc;
+    lightPosition[2] = sceneObjs[3].loc;
 
-    glUniform4fv(glGetUniformLocation(shaderProgram, "LightPositionArray"),
+    glUniform4fv(glGetUniformLocation(shaderProgram, "LightPosition"),
                  3, *lightPosition);
 
     GLfloat lightBrightness[3];
@@ -481,10 +481,10 @@ void display(void)
     lightRGB[1] = sceneObjs[2].rgb;
     lightRGB[2] = sceneObjs[3].rgb;
 
-    glUniform3fv(glGetUniformLocation(shaderProgram, "LightRGBrray"),
+    glUniform3fv(glGetUniformLocation(shaderProgram, "LightIntensity"),
                  3, *lightRGB);
 
-    glUniform1fv(glGetUniformLocation(shaderProgram, "LightBrightnessArray"),
+    glUniform1fv(glGetUniformLocation(shaderProgram, "LightBrightness"),
                  3, lightBrightness);
 
     mat4 spotRot = RotateX(-sceneObjs[3].angles[0]) * RotateZ(-sceneObjs[3].angles[1]);

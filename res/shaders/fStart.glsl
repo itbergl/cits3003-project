@@ -1,73 +1,70 @@
+varying vec3 fN;
+varying vec3[3] fL;
+varying vec3 fV;
 varying vec2 texCoord;
+varying vec3 spotlight_direction;
 
 uniform sampler2D texture;
-uniform vec3 AmbientProduct, DiffuseProduct, SpecularProduct;
-uniform float Shininess;
-uniform vec4[3] LightPositionArray;
-uniform float[3] LightBrightnessArray;
-uniform vec3[3] LightRGBrray;
 uniform float SpotlightAngle;
 
-varying vec3 pos;
-varying vec3 N;
-varying vec3 orig;
-varying vec3 dir;
+uniform vec3 AmbientProduct, DiffuseProduct, SpecularProduct;
+uniform float[3] LightBrightness;
+uniform vec3[3] LightIntensity;
+uniform float Shininess;
 
-// when given Lvec - direction of incoming light, the lightnumber in the corresponding uniform variables,
+// when given Lvec - direction of incoming light, the lightnumber varying the corresponding uniform variables,
 // and constants describing the light reduction (decay/(a*d^2+b*d+c)), returns the amount of light added
 // to a fragment as an rgba vec4
 
-vec4 getLightContribution(vec3 Lvec, int lightNo, float decay, float a, float b, float c) {
+vec3 getLightContribution(int lightNo, float decay, float a, float b, float c) {
     // average rgb value of specuare product
-    vec3 average = ((SpecularProduct.r + SpecularProduct.g + SpecularProduct.b) / 3.0) * vec3(1.0, 1.0, 1.0);
-    //properties of the light
-    vec3 rgb = LightRGBrray[lightNo];
-    float brightness = LightBrightnessArray[lightNo];
+    vec3 SpecularProductAverage = ((SpecularProduct.r + SpecularProduct.g + SpecularProduct.b) / 3.0) * vec3(1.0, 1.0, 1.0);
+        //properties of the light
+    vec3 intensity = LightIntensity[lightNo];
+    float brightness = LightBrightness[lightNo];
 
-    // Unit direction vectors for Blinn-Phong shading calculation
-    vec3 L = normalize(Lvec);   // Direction to the light source
-    vec3 E = normalize(-pos);   // Direction to the eye/camera
+        // Unit direction vectors for Blinn-Phong shading calculation
+    vec3 L = normalize(fL[lightNo]);   // Direction to the light source
+    vec3 E = normalize(fV);   // Direction to the eye/camera
     vec3 H = normalize(L + E);  // Halfway vector
+    vec3 N = normalize(fN);
 
-    float d = length(Lvec);
+    float d = length(fL[lightNo]);
 
     float Kd = max(dot(L, N), 0.0);
     vec3 diffuse = Kd * DiffuseProduct;
 
     float Ks = pow(max(dot(N, H), 0.0), Shininess);
-    vec3 specular = Ks * average;
+    vec3 specular = Ks * SpecularProductAverage;
 
     if(dot(L, N) < 0.0) {
         specular = vec3(0.0, 0.0, 0.0);
     }
-
     //constant for light attenuation
     float decayconstant = decay / (a * d * d + b * d + c);
-    return decayconstant * brightness * vec4(rgb * (diffuse + specular), 0.0);
+    // float decayconstant = 20.0 / d;
+
+    return decayconstant * brightness * intensity * (diffuse + specular);
 }
 
 void main() {
     //ambient light
     vec3 globalAmbient = vec3(0.1, 0.1, 0.1);
     vec3 ambient = AmbientProduct;
-    vec4 color = 0.5 * vec4(globalAmbient + ambient, 1.0);
+    vec3 output_colour = 0.5 * (globalAmbient + ambient);
 
-    vec3 Lvec;
     //point light
-    Lvec = LightPositionArray[0].xyz - pos;
-    color += getLightContribution(Lvec, 0, 90.0, 1.0, 1.0, 1.0);
+    output_colour += getLightContribution(0, 30.0, 1.0, 1.0, 1.0);
 
-    //directional light
-    Lvec = LightPositionArray[1].xyz - orig;
-    color += getLightContribution(Lvec, 1, 30.0, 1.0, 1.0, 1.0);
+    // //directional light
+    output_colour += getLightContribution(1, 30.0, 1.0, 1.0, 1.0);
 
-    //spot light
-    if(LightBrightnessArray[2] > 0.00001) {
-        Lvec = LightPositionArray[2].xyz - pos;
-        if(acos(dot(normalize(-Lvec), dir)) < SpotlightAngle) {
-            color += getLightContribution(Lvec, 2, 15.0, 0.02, 1.0, 1.0);
+    // //spot light
+    if(LightBrightness[2] > 0.00001) {
+        if(acos(dot(normalize(-fL[2]), spotlight_direction)) < SpotlightAngle) {
+            output_colour += getLightContribution(2, 15.0, 0.02, 1.0, 1.0);
         }
     }
 
-    gl_FragColor = color * texture2D(texture, texCoord * 2.0);
+    gl_FragColor = vec4(output_colour, 1.0) * texture2D(texture, texCoord * 2.0);
 }
