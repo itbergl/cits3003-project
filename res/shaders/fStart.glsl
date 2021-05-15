@@ -56,14 +56,12 @@ void main() {
     //point light
     output_colour += getLightContribution(0, 30.0, 1.0, 1.0, 1.0);
 
-    // //directional light
+    //directional light
     output_colour += getLightContribution(1, 30.0, 1.0, 1.0, 1.0);
 
-    // //spot light
-    if(LightBrightness[2] > 0.00001) {
-        if(acos(dot(normalize(-fL[2]), spotlight_direction)) < SpotlightAngle) {
-            output_colour += getLightContribution(2, 15.0, 0.02, 1.0, 1.0);
-        }
+    //spotlight
+    if(acos(dot(normalize(-fL[2]), spotlight_direction)) < SpotlightAngle) {
+        output_colour += getLightContribution(2, 15.0, 0.02, 1.0, 1.0);
     }
 
     gl_FragColor = vec4(output_colour, 1.0) * texture2D(texture, texCoord * 2.0);

@@ -8,12 +8,12 @@ varying vec3 fV;
 varying vec3[3] fL;
 varying vec3 spotlight_direction;
 
-uniform mat4 ModelView;
-uniform vec4[3] LightPosition;
+uniform mat4 model;
+uniform mat4 view;
 uniform mat4 Projection;
 uniform float texScale;
 
-uniform mat4 view;
+uniform vec4[3] LightPosition;
 uniform mat4 SpotlightDirectionMatrix;
 
 void main() {
@@ -24,6 +24,7 @@ void main() {
 
     // Transform vertex normal into eye coordinates (assumes scaling
     // is uniform across dimensions)
+    mat4 ModelView = view * model;
     fN = (ModelView * vec4(vNormal, 0.0)).xyz;
     fV = -(ModelView * vec4(vPosition, 1.0)).xyz;
 

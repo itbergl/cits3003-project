@@ -27,9 +27,9 @@ GLint windowHeight = 640, windowWidth = 960;
 using namespace std; // Import the C++ standard functions (e.g., min)
 
 // IDs for the GLSL program and GLSL variables.
-GLuint shaderProgram;                              // The number identifying the GLSL shader program
-GLuint vPosition, vNormal, vTexCoord;              // IDs for vshader input vars (from glGetAttribLocation)
-GLuint projectionU, modelViewU, viewU, spotlightU; // IDs for uniform variables (from glGetUniformLocation)
+GLuint shaderProgram;                          // The number identifying the GLSL shader program
+GLuint vPosition, vNormal, vTexCoord;          // IDs for vshader input vars (from glGetAttribLocation)
+GLuint projectionU, modelU, viewU, spotlightU; // IDs for uniform variables (from glGetUniformLocation)
 
 static float viewDist = 1.5;                          // Distance from the camera to the centre of the scene
 static float SIDEWAYSINITANGLE = 0;                   //so we can return to this angle
@@ -368,7 +368,7 @@ void init(void)
     CheckError();
 
     projectionU = glGetUniformLocation(shaderProgram, "Projection");
-    modelViewU = glGetUniformLocation(shaderProgram, "ModelView");
+    modelU = glGetUniformLocation(shaderProgram, "model");
     viewU = glGetUniformLocation(shaderProgram, "view");
     spotlightU = glGetUniformLocation(shaderProgram, "SpotlightDirectionMatrix");
 
@@ -433,7 +433,7 @@ void drawMesh(SceneObject sceneObj)
     mat4 model = Translate(sceneObj.loc) * Scale(sceneObj.scale) * RotateZ(sceneObj.angles[2]) * RotateY(sceneObj.angles[1]) * RotateX(sceneObj.angles[0]);
 
     // Set the model-view matrix for the shaders
-    glUniformMatrix4fv(modelViewU, 1, GL_TRUE, view * model);
+    glUniformMatrix4fv(modelU, 1, GL_TRUE, model);
 
     // Activate the VAO for a mesh, loading if needed.
     loadMeshIfNotAlreadyLoaded(sceneObj.meshId);
