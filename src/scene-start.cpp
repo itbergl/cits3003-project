@@ -253,23 +253,25 @@ mat2 camRotZ()
 
 static void adjustCamrotsideViewdist(vec2 cv)
 {
-    //cout << cv << endl;
     camRotSidewaysDeg += cv[0];
     viewDist += cv[1];
 }
 
+//changes camera angle
 static void adjustcamSideUp(vec2 su)
 {
     camRotSidewaysDeg += su[0];
     camRotUpAndOverDeg += su[1];
 }
 
+//moves object horizontally
 static void adjustLocXZ(vec2 xz)
 {
     sceneObjs[toolObj].loc[0] += xz[0];
     sceneObjs[toolObj].loc[2] += xz[1];
 }
 
+//moves object vertically and scales object
 static void adjustScaleY(vec2 sy)
 {
     sceneObjs[toolObj].scale += sy[0];
@@ -505,7 +507,6 @@ void display(void)
         vec3 rgb = so.rgb * so.brightness;
 
         glUniform3fv(glGetUniformLocation(shaderProgram, "AmbientProduct"), 1, so.ambient * rgb);
-        CheckError();
         glUniform3fv(glGetUniformLocation(shaderProgram, "DiffuseProduct"), 1, so.diffuse * rgb);
         glUniform3fv(glGetUniformLocation(shaderProgram, "SpecularProduct"), 1, so.specular * rgb);
         glUniform1f(glGetUniformLocation(shaderProgram, "Shininess"), so.shine);
@@ -532,7 +533,6 @@ static void updateMenu()
     {
         glutRemoveMenuItem(1);
     }
-
     glutSetMenu(removeObjectId);
     while (glutGet(GLUT_MENU_NUM_ITEMS) != 0)
     {
@@ -544,7 +544,7 @@ static void updateMenu()
         glutRemoveMenuItem(1);
     }
 
-    // update light menus
+    //add light menu options depending on if lights are active
     glutSetMenu(lightMenuId);
     if (lightactive[0])
     {
@@ -585,7 +585,6 @@ static void updateMenu()
         char a[numMeshes * 4] = " ";
         ++repeats[sceneObjs[i].meshId];
         strcat(menuName, objectMenuEntries[sceneObjs[i].meshId - 1]);
-
         //if multiple of the same items, give unique indicator
         if (repeats[sceneObjs[i].meshId] > 1)
         {
@@ -600,24 +599,34 @@ static void updateMenu()
     glutPostRedisplay();
 }
 
+//duplicates object given by 'id' (corrsponding to index in sceneObjs) copies all attributes except location
 static void duplicateObject(int id)
 {
     deactivateTool();
     addObject(sceneObjs[id].meshId);
+    sceneObjs[nObjects - 1].scale = sceneObjs[id].scale;
+    sceneObjs[nObjects - 1].diffuse = sceneObjs[id].diffuse;
+    sceneObjs[nObjects - 1].specular = sceneObjs[id].specular;
+    sceneObjs[nObjects - 1].ambient = sceneObjs[id].ambient;
+    sceneObjs[nObjects - 1].shine = sceneObjs[id].shine;
+    sceneObjs[nObjects - 1].rgb = sceneObjs[id].rgb;
+    sceneObjs[nObjects - 1].brightness = sceneObjs[id].brightness;
+    sceneObjs[nObjects - 1].texScale = sceneObjs[id].texScale;
     sceneObjs[nObjects - 1].texId = sceneObjs[id].texId;
+
     for (int i = 0; i < 3; i++)
     {
         sceneObjs[nObjects - 1].angles[i] = sceneObjs[id].angles[i];
     }
-    sceneObjs[nObjects - 1].scale = sceneObjs[id].scale;
     updateMenu();
 }
 
+//removes object 'id' (corresponding to index in sceneObjs) and shuffles sceneObjs array accordingly 
 static void removeObject(int id)
 {
     deactivateTool();
 
-    int j = 4;
+    int j = 4; //reserve first 4 spots for starting objs (lights and ground)
     for (int i = 4; i < maxObjects; i++)
     {
         if (i == id)
@@ -718,7 +727,7 @@ static void lightMenu(int id)
         setToolCallbacks(adjustRedGreen, mat2(1.0, 0, 0, 1.0),
                          adjustBlueBrightness, mat2(1.0, 0, 0, 1.0));
     }
-    else if (id <= 3)
+    else if (id <= 3) //adding directional, spot or point light
     {
         sceneObjs[id].brightness = 0.2;
         sceneObjs[id].scale = 0.1;
@@ -728,7 +737,7 @@ static void lightMenu(int id)
         glutPostRedisplay();
         updateMenu();
     }
-    else if (11 <= id && id <= 13)
+    else if (11 <= id && id <= 13) // removing directional, spot or point light
     {
         lightactive[id - 11] = false;
         sceneObjs[id - 10].scale = 0.0;
@@ -790,7 +799,7 @@ static void materialMenu(int id)
         setToolCallbacks(adjustRedGreen, mat2(1, 0, 0, 1),
                          adjustBlueBrightness, mat2(1, 0, 0, 1));
     }
-    if (id == 20)
+    else if (id == 20)
     {
         toolObj = currObject;
         setToolCallbacks(adjustDiffuse, mat2(1, 0, 0, 1),
