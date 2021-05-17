@@ -460,7 +460,6 @@ void display(void)
     CheckError(); // May report a harmless GL_INVALID_OPERATION with GLEW on the first frame
 
     // Set the view matrix.
-
     view = Translate(0.0, 0.0, -viewDist) * RotateX(camRotUpAndOverDeg) * RotateY(camRotSidewaysDeg);
 
     vec4 lightPosition[3];
