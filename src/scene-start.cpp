@@ -370,7 +370,7 @@ void init(void)
     CheckError();
 
     projectionU = glGetUniformLocation(shaderProgram, "Projection");
-    modelU = glGetUniformLocation(shaderProgram, "model");
+    modelU = glGetUniformLocation(shaderProgram, "ModelView");
     viewU = glGetUniformLocation(shaderProgram, "view");
     spotlightU = glGetUniformLocation(shaderProgram, "SpotlightDirectionMatrix");
 
@@ -435,7 +435,7 @@ void drawMesh(SceneObject sceneObj)
     mat4 model = Translate(sceneObj.loc) * Scale(sceneObj.scale) * RotateZ(sceneObj.angles[2]) * RotateY(sceneObj.angles[1]) * RotateX(sceneObj.angles[0]);
 
     // Set the model-view matrix for the shaders
-    glUniformMatrix4fv(modelU, 1, GL_TRUE, model);
+    glUniformMatrix4fv(modelU, 1, GL_TRUE, view*model);
 
     // Activate the VAO for a mesh, loading if needed.
     loadMeshIfNotAlreadyLoaded(sceneObj.meshId);
@@ -462,7 +462,6 @@ void display(void)
     CheckError(); // May report a harmless GL_INVALID_OPERATION with GLEW on the first frame
 
     // Set the view matrix.
-
     view = Translate(0.0, 0.0, -viewDist) * RotateX(camRotUpAndOverDeg) * RotateY(camRotSidewaysDeg);
 
     vec4 lightPosition[3];
